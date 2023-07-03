@@ -1,0 +1,32 @@
+RAM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+users                                                                             0x0557     160
+inputBuffer                                                                       0x05F7      20
+loggedUser                                                                        0x060B      20
+_seed                                                                             0x061F       4
+_base_y                                                                           0x0623       4
+
+EEPROM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+
+Register Allocation
+Variable                                                                          Register  Size
+------------------------------------------------------------------------------------------------
+numUsers                                                                          R4,R5        2
+bufferIndex                                                                       R6,R7        2
+_lcd_x                                                                            R9           1
+_lcd_y                                                                            R8           1
+_lcd_maxx                                                                         R11          1
+
+FLASH Allocation [words]
+Function                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+send_string                                                                       0x00118     21
+check_user                                                                        0x0012D     21
+check_password                                                                    0x00142     54
+usart_rx_isr                                                                      0x00178     55
+main                                                                              0x001AF     18
+strcmp                                                                            0x001C1     20
+strcpy                                                                            0x001D5     13
