@@ -4,10 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <alcd.h>
-#include <stdio.h>
 
-#define LED1 PD0
-#define LED2 PD1
+#define LED1 PORTD.0
+#define LED2 PORTD.1
 
 typedef struct
 {
@@ -27,8 +26,8 @@ void send_string(char *str)
 {
     while (*str != 0)
     {
-        while ((UCSRA & (1 << UDRE)) == 0);
-        UDR = *str;
+        while ((UCSR0A & (1 << UDRE0)) == 0);
+        UDR0 = *str;
         str++;
     }
 }
@@ -59,19 +58,19 @@ void check_password()
             if (strcmp(users[i].password, inputBuffer) == 0)
             {
                 strcpy(loggedUser, users[i].username);
-                PORTD |= (1 << LED2); // Turn on the LED2
+                LED2 = 1; // Turn on the LED2
                 send_string("\nLogin Successful!\n");
                 return;
             }
         }
     }
     send_string("\nLogin Failed!\n");
-    PORTD &= ~(1 << LED2); // Turn off the LED2
+    LED2 = 0; // Turn off the LED2
 }
 
-interrupt [USART_RXC] void usart_rx_isr(void)
+interrupt [USART0_RXC] void usart_rx_isr(void)
 {
-    char data = UDR;
+    char data = UDR0;
     if (data == '\n')
     {
         inputBuffer[bufferIndex] = '\0'; // Null-terminate the received string
@@ -95,16 +94,17 @@ interrupt [USART_RXC] void usart_rx_isr(void)
 void main(void)
 {
     // Port D is output for LEDs
-    DDRD |= (1 << LED1) | (1 << LED2);
+    DDRD.0 = 1;
+    DDRD.1 = 1;
 
     // Turn on the LED1
-    PORTD |= (1 << LED1);
+    LED1 = 1;
 
     // Initialize USART
-    UCSRA = 0x00;
-    UCSRB = 0x18;
-    UCSRC = 0x86;
-    UBRRL = 51; // for 9600 bps with 8MHz clock
+    UCSR0A = 0x00;
+    UCSR0B = 0x18;
+    UCSR0C = 0x06;
+    UBRR0L = 51; // for 9600 bps with 8MHz clock
 
     // Enable Global Interrupts
     #asm("sei")

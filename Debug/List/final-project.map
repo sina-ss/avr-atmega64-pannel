@@ -1,11 +1,14 @@
 RAM Allocation [bytes]
 Variable                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-users                                                                             0x0557     160
-inputBuffer                                                                       0x05F7      20
-loggedUser                                                                        0x060B      20
-_seed                                                                             0x061F       4
-_base_y                                                                           0x0623       4
+predefinedUsers                                                                   0x05C3     160
+registeredUsers                                                                   0x0663     400
+inputBuffer                                                                       0x07F3      20
+tempPassword                                                                      0x0807      20
+loggedUser                                                                        0x081B      20
+_seed                                                                             0x082F       4
+_base_y                                                                           0x0833       4
+_lcd_maxx                                                                         0x0837       1
 
 EEPROM Allocation [bytes]
 Variable                                                                          Address   Size
@@ -14,19 +17,22 @@ Variable                                                                        
 Register Allocation
 Variable                                                                          Register  Size
 ------------------------------------------------------------------------------------------------
-numUsers                                                                          R4,R5        2
-bufferIndex                                                                       R6,R7        2
-_lcd_x                                                                            R9           1
-_lcd_y                                                                            R8           1
-_lcd_maxx                                                                         R11          1
+numPredefinedUsers                                                                R4,R5        2
+numRegisteredUsers                                                                R6,R7        2
+bufferIndex                                                                       R8,R9        2
+isRegistering                                                                     R10,R11      2
+_lcd_x                                                                            R13          1
+_lcd_y                                                                            R12          1
 
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-send_string                                                                       0x00118     21
-check_user                                                                        0x0012D     21
-check_password                                                                    0x00142     54
-usart_rx_isr                                                                      0x00178     55
-main                                                                              0x001AF     18
-strcmp                                                                            0x001C1     20
-strcpy                                                                            0x001D5     13
+send_string                                                                       0x0014C     21
+check_user                                                                        0x00161     55
+check_password                                                                    0x00198     76
+check_new_password                                                                0x001E4     12
+check_confirm_password                                                            0x001F0     30
+usart_rx_isr                                                                      0x0020E     70
+main                                                                              0x00254     18
+strcmp                                                                            0x00266     20
+strcpy                                                                            0x0027A     13

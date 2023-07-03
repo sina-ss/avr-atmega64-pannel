@@ -14,13 +14,17 @@ typedef struct
     char password[20];
 } User;
 
-User users[] = { {"user1", "pass1"}, {"user2", "pass2"}, {"user3", "pass3"}, {"user4", "pass4"} };
-int numUsers = sizeof(users) / sizeof(User);
+User predefinedUsers[] = { {"user1", "pass1"}, {"user2", "pass2"}, {"user3", "pass3"}, {"user4", "pass4"} };
+User registeredUsers[10];  // Limit new users to 10
+int numPredefinedUsers = sizeof(predefinedUsers) / sizeof(User);
+int numRegisteredUsers = 0;
 
 char inputBuffer[20];
 int bufferIndex = 0;
+char tempPassword[20];
 
 char loggedUser[20];
+int isRegistering = 0;
 
 void send_string(char *str)
 {
@@ -35,29 +39,51 @@ void send_string(char *str)
 void check_user()
 {
     int i;
-    for (i = 0; i < numUsers; i++)
+    for (i = 0; i < numPredefinedUsers; i++)
     {
-        if (strcmp(users[i].username, inputBuffer) == 0)
+        if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
         {
             send_string("\nEnter Password: ");
             return;
         }
     }
-
+    for (i = 0; i < numRegisteredUsers; i++)
+    {
+        if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
+        {
+            send_string("\nEnter Password: ");
+            return;
+        }
+    }
     // If username not found, register new user
+    isRegistering = 1;
+    strcpy(registeredUsers[numRegisteredUsers].username, inputBuffer);
     send_string("\nNew Password: ");
 }
 
 void check_password()
 {
     int i;
-    for (i = 0; i < numUsers; i++)
+    for (i = 0; i < numPredefinedUsers; i++)
     {
-        if (strcmp(users[i].username, inputBuffer) == 0)
+        if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
         {
-            if (strcmp(users[i].password, inputBuffer) == 0)
+            if (strcmp(predefinedUsers[i].password, inputBuffer) == 0)
             {
-                strcpy(loggedUser, users[i].username);
+                strcpy(loggedUser, predefinedUsers[i].username);
+                LED2 = 1; // Turn on the LED2
+                send_string("\nLogin Successful!\n");
+                return;
+            }
+        }
+    }
+    for (i = 0; i < numRegisteredUsers; i++)
+    {
+        if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
+        {
+            if (strcmp(registeredUsers[i].password, inputBuffer) == 0)
+            {
+                strcpy(loggedUser, registeredUsers[i].username);
                 LED2 = 1; // Turn on the LED2
                 send_string("\nLogin Successful!\n");
                 return;
@@ -68,6 +94,27 @@ void check_password()
     LED2 = 0; // Turn off the LED2
 }
 
+void check_new_password()
+{
+    strcpy(tempPassword, inputBuffer);
+    send_string("\nConfirm Password: ");
+}
+
+void check_confirm_password()
+{
+    if (strcmp(tempPassword, inputBuffer) == 0)
+    {
+        strcpy(registeredUsers[numRegisteredUsers].password, tempPassword);
+        numRegisteredUsers++;
+        send_string("\nRegistration Successful!\n");
+    }
+    else
+    {
+        send_string("\nRegistration Failed!\n");
+    }
+    isRegistering = 0;
+}
+
 interrupt [USART0_RXC] void usart_rx_isr(void)
 {
     char data = UDR0;
@@ -76,7 +123,19 @@ interrupt [USART0_RXC] void usart_rx_isr(void)
         inputBuffer[bufferIndex] = '\0'; // Null-terminate the received string
         if (loggedUser[0] == '\0')
         {
-            check_user();
+            if (isRegistering == 0)
+            {
+                check_user();
+            }
+            else if (isRegistering == 1)
+            {
+                check_new_password();
+                isRegistering++;
+            }
+            else
+            {
+                check_confirm_password();
+            }
         }
         else
         {
