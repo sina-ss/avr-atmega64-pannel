@@ -51,6 +51,9 @@ int numMenuOptions = sizeof(menuOptions) / sizeof(char*);
 // Menu state
 int isMenuOpen = 0;
 int menuSelection = 0;
+float voltage;
+char voltageStr[20];
+char timeBuffer[10];
 
 void send_string(char *str)
 {
@@ -223,12 +226,14 @@ void measure_voltage()
     while (ADCSRA & (1 << ADSC));
 
     // Get the result
-    adc_result = ADC;
+    adc_result = ADCL | (ADCH << 8);
 
     // Display the voltage on the 7-segment display and LCD
-    float voltage = (adc_result / 1024.0) * 5;
+    voltage = (adc_result / 1024.0) * 5;
     lcd_gotoxy(0, 1);
-    lcd_putsf("Voltage: %.2fV", voltage);
+    sprintf(voltageStr, "Voltage: %.2fV", voltage);
+    lcd_puts(voltageStr);
+
 
     // Assuming you have a function to display numbers on 7-segment
     display_on_7segment(voltage);
@@ -238,8 +243,10 @@ void set_clock()
 {
     // Ask the user to input time
     send_string("\nEnter time (HH:MM:SS): ");
-    char timeBuffer[10];
-    gets(timeBuffer);
+    fgets(timeBuffer, sizeof(timeBuffer), stdin);
+    // Remove newline character from fgets
+    timeBuffer[strcspn(timeBuffer, "\n")] = 0;
+
     sscanf(timeBuffer, "%d:%d:%d", &currentTime.hours, &currentTime.minutes, &currentTime.seconds);
 
     // Display the time on LCD
