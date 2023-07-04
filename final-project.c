@@ -7,6 +7,21 @@
 
 #define LED1 PORTD.0
 #define LED2 PORTD.1
+#define KEY_PORT PORTD.2
+#define VOLTAGE_PIN ADC0
+#define BUZZER PORTD.3
+#define SHUTDOWN_MINUTE 5
+
+// ADC conversion result
+unsigned int adc_result;
+
+// Time struct
+typedef struct
+{
+    int hours;
+    int minutes;
+    int seconds;
+} Time;
 
 typedef struct
 {
@@ -25,6 +40,17 @@ char tempPassword[20];
 
 char loggedUser[20];
 int isRegistering = 0;
+
+Time currentTime = {0, 0, 0};
+Time shutdownTime = {0, 0, 0};
+
+// Menu options
+char* menuOptions[] = {"Voltage measurement", "Setting the clock", "Automatic shutdown"};
+int numMenuOptions = sizeof(menuOptions) / sizeof(char*);
+
+// Menu state
+int isMenuOpen = 0;
+int menuSelection = 0;
 
 void send_string(char *str)
 {
@@ -150,6 +176,117 @@ interrupt [USART0_RXC] void usart_rx_isr(void)
     }
 }
 
+unsigned char get7SegmentCode(unsigned char digit)
+{
+    unsigned char segmentCodes[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
+    if (digit < 10)
+        return segmentCodes[digit];
+    return 0;
+}
+
+void display_on_7segment(float voltage)
+{
+    static unsigned char digitIndex = 0;
+    static unsigned int digitCodes[4] = {0};
+    
+    // Calculate digit codes once when voltage changes
+    static float lastVoltage = -1.0f;
+    if (voltage != lastVoltage)
+    {
+        int intVoltage = (int)(voltage * 100);  // Convert to integer to avoid floating point division
+        digitCodes[0] = get7SegmentCode(intVoltage / 1000);  // Thousands
+        digitCodes[1] = get7SegmentCode((intVoltage % 1000) / 100);  // Hundreds
+        digitCodes[2] = get7SegmentCode((intVoltage % 100) / 10);  // Tens
+        digitCodes[3] = get7SegmentCode(intVoltage % 10);  // Ones
+        lastVoltage = voltage;
+    }
+    
+    // Turn off all digits
+    PORTA = 0;
+
+    // Set segments
+    PORTA = digitCodes[digitIndex];
+
+    // Turn on the current digit
+    PORTA |= (1 << (digitIndex + 4));
+
+    // Go to the next digit
+    digitIndex = (digitIndex + 1) % 4;
+}
+
+void measure_voltage()
+{
+    // Start the ADC conversion
+    ADCSRA |= (1 << ADSC);
+
+    // Wait for conversion to complete
+    while (ADCSRA & (1 << ADSC));
+
+    // Get the result
+    adc_result = ADC;
+
+    // Display the voltage on the 7-segment display and LCD
+    float voltage = (adc_result / 1024.0) * 5;
+    lcd_gotoxy(0, 1);
+    lcd_putsf("Voltage: %.2fV", voltage);
+
+    // Assuming you have a function to display numbers on 7-segment
+    display_on_7segment(voltage);
+}
+
+void set_clock()
+{
+    // Ask the user to input time
+    send_string("\nEnter time (HH:MM:SS): ");
+    char timeBuffer[10];
+    gets(timeBuffer);
+    sscanf(timeBuffer, "%d:%d:%d", &currentTime.hours, &currentTime.minutes, &currentTime.seconds);
+
+    // Display the time on LCD
+    lcd_gotoxy(0, 1);
+    lcd_putsf("Time: %02d:%02d:%02d", currentTime.hours, currentTime.minutes, currentTime.seconds);
+}
+
+void auto_shutdown()
+{
+    // Ask the user to input shutdown duration
+    send_string("\nEnter shutdown duration (MM:SS): ");
+    char durationBuffer[10];
+    gets(durationBuffer);
+    sscanf(durationBuffer, "%d:%d", &shutdownTime.minutes, &shutdownTime.seconds);
+
+    // Start a countdown
+    while (shutdownTime.minutes != 0 || shutdownTime.seconds != 0)
+    {
+        // Decrement the time
+        if (--shutdownTime.seconds < 0)
+        {
+            shutdownTime.seconds = 59;
+            shutdownTime.minutes--;
+        }
+
+        // Display the remaining time on LCD
+        lcd_gotoxy(0, 1);
+        lcd_putsf("Shutdown in %02d:%02d", shutdownTime.minutes, shutdownTime.seconds);
+
+        // Beep the buzzer when there is 1 minute left
+        if (shutdownTime.minutes == 1 && shutdownTime.seconds == 0)
+        {
+            PORTD |= (1 << BUZZER);
+        }
+
+        // Delay for a second
+        delay_ms(1000);
+    }
+
+    // Shutdown the system
+    PORTD &= ~(1 << LED1);
+    PORTD &= ~(1 << LED2);
+    PORTD &= ~(1 << BUZZER);
+    lcd_clear();
+    PORTA = 0; // Turn off 7-segment
+}
+
 void main(void)
 {
     // Port D is output for LEDs
@@ -171,7 +308,34 @@ void main(void)
     send_string("Enter Username: ");
 
     while (1)
+{
+    if (isMenuOpen == 1)
     {
-        // Your code here
+        // Display the menu on LCD
+        lcd_gotoxy(0, 0);
+        lcd_putsf("Menu: ");
+        lcd_gotoxy(0, 1);
+        lcd_puts(menuOptions[menuSelection]);
+
+        // Display selection on 7-segment
+        PORTA = menuSelection + 1;
     }
+
+    if (PIND & (1 << KEY_PORT))
+    {
+        // Menu button is pressed
+        if (isMenuOpen == 0)
+        {
+            // Open the menu
+            isMenuOpen = 1;
+        }
+        else
+        {
+            // Close the menu
+            isMenuOpen = 0;
+            PORTA = 0; // Turn off 7-segment
+        }
+    }
+}
+
 }

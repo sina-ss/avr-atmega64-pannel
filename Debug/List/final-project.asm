@@ -1086,16 +1086,16 @@ __DELAY_USW_LOOP:
 	.ENDM
 
 ;NAME DEFINITIONS FOR GLOBAL VARIABLES ALLOCATED TO REGISTERS
-	.DEF _numPredefinedUsers=R4
-	.DEF _numPredefinedUsers_msb=R5
-	.DEF _numRegisteredUsers=R6
-	.DEF _numRegisteredUsers_msb=R7
-	.DEF _bufferIndex=R8
-	.DEF _bufferIndex_msb=R9
-	.DEF _isRegistering=R10
-	.DEF _isRegistering_msb=R11
-	.DEF __lcd_x=R13
-	.DEF __lcd_y=R12
+	.DEF _adc_result=R4
+	.DEF _adc_result_msb=R5
+	.DEF _numPredefinedUsers=R6
+	.DEF _numPredefinedUsers_msb=R7
+	.DEF _numRegisteredUsers=R8
+	.DEF _numRegisteredUsers_msb=R9
+	.DEF _bufferIndex=R10
+	.DEF _bufferIndex_msb=R11
+	.DEF _isRegistering=R12
+	.DEF _isRegistering_msb=R13
 
 	.CSEG
 	.ORG 0x00
@@ -1171,27 +1171,39 @@ _0x3:
 	.DB  0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0
 	.DB  0x0,0x0,0x0,0x0,0x70,0x61,0x73,0x73
 	.DB  0x34
+_0x5:
+	.DB  LOW(_0x4),HIGH(_0x4),LOW(_0x4+20),HIGH(_0x4+20),LOW(_0x4+38),HIGH(_0x4+38)
+_0x6:
+	.DB  0x3
 _0x0:
-	.DB  0xA,0x45,0x6E,0x74,0x65,0x72,0x20,0x50
-	.DB  0x61,0x73,0x73,0x77,0x6F,0x72,0x64,0x3A
-	.DB  0x20,0x0,0xA,0x4E,0x65,0x77,0x20,0x50
-	.DB  0x61,0x73,0x73,0x77,0x6F,0x72,0x64,0x3A
-	.DB  0x20,0x0,0xA,0x4C,0x6F,0x67,0x69,0x6E
+	.DB  0x56,0x6F,0x6C,0x74,0x61,0x67,0x65,0x20
+	.DB  0x6D,0x65,0x61,0x73,0x75,0x72,0x65,0x6D
+	.DB  0x65,0x6E,0x74,0x0,0x53,0x65,0x74,0x74
+	.DB  0x69,0x6E,0x67,0x20,0x74,0x68,0x65,0x20
+	.DB  0x63,0x6C,0x6F,0x63,0x6B,0x0,0x41,0x75
+	.DB  0x74,0x6F,0x6D,0x61,0x74,0x69,0x63,0x20
+	.DB  0x73,0x68,0x75,0x74,0x64,0x6F,0x77,0x6E
+	.DB  0x0,0xA,0x45,0x6E,0x74,0x65,0x72,0x20
+	.DB  0x50,0x61,0x73,0x73,0x77,0x6F,0x72,0x64
+	.DB  0x3A,0x20,0x0,0xA,0x4E,0x65,0x77,0x20
+	.DB  0x50,0x61,0x73,0x73,0x77,0x6F,0x72,0x64
+	.DB  0x3A,0x20,0x0,0xA,0x4C,0x6F,0x67,0x69
+	.DB  0x6E,0x20,0x53,0x75,0x63,0x63,0x65,0x73
+	.DB  0x73,0x66,0x75,0x6C,0x21,0xA,0x0,0xA
+	.DB  0x4C,0x6F,0x67,0x69,0x6E,0x20,0x46,0x61
+	.DB  0x69,0x6C,0x65,0x64,0x21,0xA,0x0,0xA
+	.DB  0x43,0x6F,0x6E,0x66,0x69,0x72,0x6D,0x20
+	.DB  0x50,0x61,0x73,0x73,0x77,0x6F,0x72,0x64
+	.DB  0x3A,0x20,0x0,0xA,0x52,0x65,0x67,0x69
+	.DB  0x73,0x74,0x72,0x61,0x74,0x69,0x6F,0x6E
 	.DB  0x20,0x53,0x75,0x63,0x63,0x65,0x73,0x73
-	.DB  0x66,0x75,0x6C,0x21,0xA,0x0,0xA,0x4C
-	.DB  0x6F,0x67,0x69,0x6E,0x20,0x46,0x61,0x69
-	.DB  0x6C,0x65,0x64,0x21,0xA,0x0,0xA,0x43
-	.DB  0x6F,0x6E,0x66,0x69,0x72,0x6D,0x20,0x50
-	.DB  0x61,0x73,0x73,0x77,0x6F,0x72,0x64,0x3A
-	.DB  0x20,0x0,0xA,0x52,0x65,0x67,0x69,0x73
-	.DB  0x74,0x72,0x61,0x74,0x69,0x6F,0x6E,0x20
-	.DB  0x53,0x75,0x63,0x63,0x65,0x73,0x73,0x66
-	.DB  0x75,0x6C,0x21,0xA,0x0,0xA,0x52,0x65
-	.DB  0x67,0x69,0x73,0x74,0x72,0x61,0x74,0x69
-	.DB  0x6F,0x6E,0x20,0x46,0x61,0x69,0x6C,0x65
-	.DB  0x64,0x21,0xA,0x0,0x45,0x6E,0x74,0x65
-	.DB  0x72,0x20,0x55,0x73,0x65,0x72,0x6E,0x61
-	.DB  0x6D,0x65,0x3A,0x20,0x0
+	.DB  0x66,0x75,0x6C,0x21,0xA,0x0,0xA,0x52
+	.DB  0x65,0x67,0x69,0x73,0x74,0x72,0x61,0x74
+	.DB  0x69,0x6F,0x6E,0x20,0x46,0x61,0x69,0x6C
+	.DB  0x65,0x64,0x21,0xA,0x0,0x45,0x6E,0x74
+	.DB  0x65,0x72,0x20,0x55,0x73,0x65,0x72,0x6E
+	.DB  0x61,0x6D,0x65,0x3A,0x20,0x0,0x4D,0x65
+	.DB  0x6E,0x75,0x3A,0x20,0x0
 _0x2020060:
 	.DB  0x1
 _0x2020000:
@@ -1202,52 +1214,68 @@ _0x2060003:
 
 __GLOBAL_INI_TBL:
 	.DW  0x08
-	.DW  0x04
+	.DW  0x06
 	.DW  __REG_VARS*2
 
 	.DW  0x91
 	.DW  _predefinedUsers
 	.DW  _0x3*2
 
-	.DW  0x12
-	.DW  _0xE
+	.DW  0x14
+	.DW  _0x4
 	.DW  _0x0*2
 
 	.DW  0x12
-	.DW  _0xE+18
-	.DW  _0x0*2
+	.DW  _0x4+20
+	.DW  _0x0*2+20
+
+	.DW  0x13
+	.DW  _0x4+38
+	.DW  _0x0*2+38
+
+	.DW  0x06
+	.DW  _menuOptions
+	.DW  _0x5*2
+
+	.DW  0x12
+	.DW  _0x11
+	.DW  _0x0*2+57
+
+	.DW  0x12
+	.DW  _0x11+18
+	.DW  _0x0*2+57
 
 	.DW  0x10
-	.DW  _0xE+36
-	.DW  _0x0*2+18
+	.DW  _0x11+36
+	.DW  _0x0*2+75
 
 	.DW  0x14
-	.DW  _0x1A
-	.DW  _0x0*2+34
+	.DW  _0x1D
+	.DW  _0x0*2+91
 
 	.DW  0x14
-	.DW  _0x1A+20
-	.DW  _0x0*2+34
+	.DW  _0x1D+20
+	.DW  _0x0*2+91
 
 	.DW  0x10
-	.DW  _0x1A+40
-	.DW  _0x0*2+54
+	.DW  _0x1D+40
+	.DW  _0x0*2+111
 
 	.DW  0x14
-	.DW  _0x24
-	.DW  _0x0*2+70
+	.DW  _0x27
+	.DW  _0x0*2+127
 
 	.DW  0x1B
-	.DW  _0x26
-	.DW  _0x0*2+90
+	.DW  _0x29
+	.DW  _0x0*2+147
 
 	.DW  0x17
-	.DW  _0x26+27
-	.DW  _0x0*2+117
+	.DW  _0x29+27
+	.DW  _0x0*2+174
 
 	.DW  0x11
-	.DW  _0x36
-	.DW  _0x0*2+140
+	.DW  _0x39
+	.DW  _0x0*2+197
 
 	.DW  0x01
 	.DW  __seed_G101
@@ -1355,6 +1383,21 @@ __GLOBAL_INI_END:
 ;
 ;#define LED1 PORTD.0
 ;#define LED2 PORTD.1
+;#define KEY_PORT PORTD.2
+;#define VOLTAGE_PIN ADC0
+;#define BUZZER PORTD.3
+;#define SHUTDOWN_MINUTE 5
+;
+;// ADC conversion result
+;unsigned int adc_result;
+;
+;// Time struct
+;typedef struct
+;{
+;    int hours;
+;    int minutes;
+;    int seconds;
+;} Time;
 ;
 ;typedef struct
 ;{
@@ -1376,234 +1419,246 @@ __GLOBAL_INI_END:
 ;char loggedUser[20];
 ;int isRegistering = 0;
 ;
+;Time currentTime = {0, 0, 0};
+;Time shutdownTime = {0, 0, 0};
+;
+;// Menu options
+;char* menuOptions[] = {"Voltage measurement", "Setting the clock", "Automatic shutdown"};
+_0x4:
+	.BYTE 0x39
+;int numMenuOptions = sizeof(menuOptions) / sizeof(char*);
+;
+;// Menu state
+;int isMenuOpen = 0;
+;int menuSelection = 0;
+;
 ;void send_string(char *str)
-; 0000 001E {
+; 0000 0038 {
 
 	.CSEG
 _send_string:
 ; .FSTART _send_string
-; 0000 001F     while (*str != 0)
+; 0000 0039     while (*str != 0)
 	ST   -Y,R27
 	ST   -Y,R26
 ;	*str -> Y+0
-_0x4:
+_0x7:
 	LD   R26,Y
 	LDD  R27,Y+1
 	LD   R30,X
 	CPI  R30,0
-	BREQ _0x6
-; 0000 0020     {
-; 0000 0021         while ((UCSR0A & (1 << UDRE0)) == 0);
-_0x7:
+	BREQ _0x9
+; 0000 003A     {
+; 0000 003B         while ((UCSR0A & (1 << UDRE0)) == 0);
+_0xA:
 	SBIS 0xB,5
-	RJMP _0x7
-; 0000 0022         UDR0 = *str;
+	RJMP _0xA
+; 0000 003C         UDR0 = *str;
 	LD   R26,Y
 	LDD  R27,Y+1
 	LD   R30,X
 	OUT  0xC,R30
-; 0000 0023         str++;
+; 0000 003D         str++;
 	LD   R30,Y
 	LDD  R31,Y+1
 	ADIW R30,1
 	ST   Y,R30
 	STD  Y+1,R31
-; 0000 0024     }
-	RJMP _0x4
-_0x6:
-; 0000 0025 }
-	ADIW R28,2
-	RET
+; 0000 003E     }
+	RJMP _0x7
+_0x9:
+; 0000 003F }
+	JMP  _0x20C0003
 ; .FEND
 ;
 ;void check_user()
-; 0000 0028 {
+; 0000 0042 {
 _check_user:
 ; .FSTART _check_user
-; 0000 0029     int i;
-; 0000 002A     for (i = 0; i < numPredefinedUsers; i++)
+; 0000 0043     int i;
+; 0000 0044     for (i = 0; i < numPredefinedUsers; i++)
 	ST   -Y,R17
 	ST   -Y,R16
 ;	i -> R16,R17
 	__GETWRN 16,17,0
-_0xB:
-	__CPWRR 16,17,4,5
-	BRGE _0xC
-; 0000 002B     {
-; 0000 002C         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
+_0xE:
+	__CPWRR 16,17,6,7
+	BRGE _0xF
+; 0000 0045     {
+; 0000 0046         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	CALL SUBOPT_0x1
-	BRNE _0xD
-; 0000 002D         {
-; 0000 002E             send_string("\nEnter Password: ");
-	__POINTW2MN _0xE,0
+	BRNE _0x10
+; 0000 0047         {
+; 0000 0048             send_string("\nEnter Password: ");
+	__POINTW2MN _0x11,0
 	RCALL _send_string
-; 0000 002F             return;
-	RJMP _0x20C0001
-; 0000 0030         }
-; 0000 0031     }
-_0xD:
-	__ADDWRN 16,17,1
-	RJMP _0xB
-_0xC:
-; 0000 0032     for (i = 0; i < numRegisteredUsers; i++)
-	__GETWRN 16,17,0
+; 0000 0049             return;
+	RJMP _0x20C0004
+; 0000 004A         }
+; 0000 004B     }
 _0x10:
-	__CPWRR 16,17,6,7
-	BRGE _0x11
-; 0000 0033     {
-; 0000 0034         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
+	__ADDWRN 16,17,1
+	RJMP _0xE
+_0xF:
+; 0000 004C     for (i = 0; i < numRegisteredUsers; i++)
+	__GETWRN 16,17,0
+_0x13:
+	__CPWRR 16,17,8,9
+	BRGE _0x14
+; 0000 004D     {
+; 0000 004E         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	CALL SUBOPT_0x2
 	CALL _strcmp
 	CPI  R30,0
-	BRNE _0x12
-; 0000 0035         {
-; 0000 0036             send_string("\nEnter Password: ");
-	__POINTW2MN _0xE,18
+	BRNE _0x15
+; 0000 004F         {
+; 0000 0050             send_string("\nEnter Password: ");
+	__POINTW2MN _0x11,18
 	RCALL _send_string
-; 0000 0037             return;
-	RJMP _0x20C0001
-; 0000 0038         }
-; 0000 0039     }
-_0x12:
+; 0000 0051             return;
+	RJMP _0x20C0004
+; 0000 0052         }
+; 0000 0053     }
+_0x15:
 	__ADDWRN 16,17,1
-	RJMP _0x10
-_0x11:
-; 0000 003A     // If username not found, register new user
-; 0000 003B     isRegistering = 1;
+	RJMP _0x13
+_0x14:
+; 0000 0054     // If username not found, register new user
+; 0000 0055     isRegistering = 1;
 	LDI  R30,LOW(1)
 	LDI  R31,HIGH(1)
-	MOVW R10,R30
-; 0000 003C     strcpy(registeredUsers[numRegisteredUsers].username, inputBuffer);
-	MOVW R30,R6
+	MOVW R12,R30
+; 0000 0056     strcpy(registeredUsers[numRegisteredUsers].username, inputBuffer);
+	MOVW R30,R8
 	LDI  R26,LOW(40)
 	LDI  R27,HIGH(40)
 	CALL __MULW12U
 	CALL SUBOPT_0x2
 	CALL _strcpy
-; 0000 003D     send_string("\nNew Password: ");
-	__POINTW2MN _0xE,36
+; 0000 0057     send_string("\nNew Password: ");
+	__POINTW2MN _0x11,36
 	RCALL _send_string
-; 0000 003E }
-	RJMP _0x20C0001
+; 0000 0058 }
+	RJMP _0x20C0004
 ; .FEND
 
 	.DSEG
-_0xE:
+_0x11:
 	.BYTE 0x34
 ;
 ;void check_password()
-; 0000 0041 {
+; 0000 005B {
 
 	.CSEG
 _check_password:
 ; .FSTART _check_password
-; 0000 0042     int i;
-; 0000 0043     for (i = 0; i < numPredefinedUsers; i++)
+; 0000 005C     int i;
+; 0000 005D     for (i = 0; i < numPredefinedUsers; i++)
 	ST   -Y,R17
 	ST   -Y,R16
 ;	i -> R16,R17
 	__GETWRN 16,17,0
-_0x14:
-	__CPWRR 16,17,4,5
-	BRGE _0x15
-; 0000 0044     {
-; 0000 0045         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
+_0x17:
+	__CPWRR 16,17,6,7
+	BRGE _0x18
+; 0000 005E     {
+; 0000 005F         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	CALL SUBOPT_0x1
-	BRNE _0x16
-; 0000 0046         {
-; 0000 0047             if (strcmp(predefinedUsers[i].password, inputBuffer) == 0)
+	BRNE _0x19
+; 0000 0060         {
+; 0000 0061             if (strcmp(predefinedUsers[i].password, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	__ADDW1MN _predefinedUsers,20
 	CALL SUBOPT_0x3
-	BRNE _0x17
-; 0000 0048             {
-; 0000 0049                 strcpy(loggedUser, predefinedUsers[i].username);
+	BRNE _0x1A
+; 0000 0062             {
+; 0000 0063                 strcpy(loggedUser, predefinedUsers[i].username);
 	CALL SUBOPT_0x4
 	SUBI R30,LOW(-_predefinedUsers)
 	SBCI R31,HIGH(-_predefinedUsers)
 	MOVW R26,R30
 	CALL _strcpy
-; 0000 004A                 LED2 = 1; // Turn on the LED2
+; 0000 0064                 LED2 = 1; // Turn on the LED2
 	SBI  0x12,1
-; 0000 004B                 send_string("\nLogin Successful!\n");
-	__POINTW2MN _0x1A,0
+; 0000 0065                 send_string("\nLogin Successful!\n");
+	__POINTW2MN _0x1D,0
 	RCALL _send_string
-; 0000 004C                 return;
-	RJMP _0x20C0001
-; 0000 004D             }
-; 0000 004E         }
-_0x17:
-; 0000 004F     }
-_0x16:
+; 0000 0066                 return;
+	RJMP _0x20C0004
+; 0000 0067             }
+; 0000 0068         }
+_0x1A:
+; 0000 0069     }
+_0x19:
 	__ADDWRN 16,17,1
-	RJMP _0x14
-_0x15:
-; 0000 0050     for (i = 0; i < numRegisteredUsers; i++)
+	RJMP _0x17
+_0x18:
+; 0000 006A     for (i = 0; i < numRegisteredUsers; i++)
 	__GETWRN 16,17,0
-_0x1C:
-	__CPWRR 16,17,6,7
-	BRGE _0x1D
-; 0000 0051     {
-; 0000 0052         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
+_0x1F:
+	__CPWRR 16,17,8,9
+	BRGE _0x20
+; 0000 006B     {
+; 0000 006C         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	CALL SUBOPT_0x2
 	CALL _strcmp
 	CPI  R30,0
-	BRNE _0x1E
-; 0000 0053         {
-; 0000 0054             if (strcmp(registeredUsers[i].password, inputBuffer) == 0)
+	BRNE _0x21
+; 0000 006D         {
+; 0000 006E             if (strcmp(registeredUsers[i].password, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	__ADDW1MN _registeredUsers,20
 	CALL SUBOPT_0x3
-	BRNE _0x1F
-; 0000 0055             {
-; 0000 0056                 strcpy(loggedUser, registeredUsers[i].username);
+	BRNE _0x22
+; 0000 006F             {
+; 0000 0070                 strcpy(loggedUser, registeredUsers[i].username);
 	CALL SUBOPT_0x4
 	SUBI R30,LOW(-_registeredUsers)
 	SBCI R31,HIGH(-_registeredUsers)
 	MOVW R26,R30
 	CALL _strcpy
-; 0000 0057                 LED2 = 1; // Turn on the LED2
+; 0000 0071                 LED2 = 1; // Turn on the LED2
 	SBI  0x12,1
-; 0000 0058                 send_string("\nLogin Successful!\n");
-	__POINTW2MN _0x1A,20
+; 0000 0072                 send_string("\nLogin Successful!\n");
+	__POINTW2MN _0x1D,20
 	RCALL _send_string
-; 0000 0059                 return;
-	RJMP _0x20C0001
-; 0000 005A             }
-; 0000 005B         }
-_0x1F:
-; 0000 005C     }
-_0x1E:
+; 0000 0073                 return;
+	RJMP _0x20C0004
+; 0000 0074             }
+; 0000 0075         }
+_0x22:
+; 0000 0076     }
+_0x21:
 	__ADDWRN 16,17,1
-	RJMP _0x1C
-_0x1D:
-; 0000 005D     send_string("\nLogin Failed!\n");
-	__POINTW2MN _0x1A,40
+	RJMP _0x1F
+_0x20:
+; 0000 0077     send_string("\nLogin Failed!\n");
+	__POINTW2MN _0x1D,40
 	RCALL _send_string
-; 0000 005E     LED2 = 0; // Turn off the LED2
+; 0000 0078     LED2 = 0; // Turn off the LED2
 	CBI  0x12,1
-; 0000 005F }
-_0x20C0001:
+; 0000 0079 }
+_0x20C0004:
 	LD   R16,Y+
 	LD   R17,Y+
 	RET
 ; .FEND
 
 	.DSEG
-_0x1A:
+_0x1D:
 	.BYTE 0x38
 ;
 ;void check_new_password()
-; 0000 0062 {
+; 0000 007C {
 
 	.CSEG
 _check_new_password:
 ; .FSTART _check_new_password
-; 0000 0063     strcpy(tempPassword, inputBuffer);
+; 0000 007D     strcpy(tempPassword, inputBuffer);
 	LDI  R30,LOW(_tempPassword)
 	LDI  R31,HIGH(_tempPassword)
 	ST   -Y,R31
@@ -1611,31 +1666,31 @@ _check_new_password:
 	LDI  R26,LOW(_inputBuffer)
 	LDI  R27,HIGH(_inputBuffer)
 	CALL _strcpy
-; 0000 0064     send_string("\nConfirm Password: ");
-	__POINTW2MN _0x24,0
+; 0000 007E     send_string("\nConfirm Password: ");
+	__POINTW2MN _0x27,0
 	RCALL _send_string
-; 0000 0065 }
+; 0000 007F }
 	RET
 ; .FEND
 
 	.DSEG
-_0x24:
+_0x27:
 	.BYTE 0x14
 ;
 ;void check_confirm_password()
-; 0000 0068 {
+; 0000 0082 {
 
 	.CSEG
 _check_confirm_password:
 ; .FSTART _check_confirm_password
-; 0000 0069     if (strcmp(tempPassword, inputBuffer) == 0)
+; 0000 0083     if (strcmp(tempPassword, inputBuffer) == 0)
 	LDI  R30,LOW(_tempPassword)
 	LDI  R31,HIGH(_tempPassword)
 	CALL SUBOPT_0x3
-	BRNE _0x25
-; 0000 006A     {
-; 0000 006B         strcpy(registeredUsers[numRegisteredUsers].password, tempPassword);
-	MOVW R30,R6
+	BRNE _0x28
+; 0000 0084     {
+; 0000 0085         strcpy(registeredUsers[numRegisteredUsers].password, tempPassword);
+	MOVW R30,R8
 	LDI  R26,LOW(40)
 	LDI  R27,HIGH(40)
 	CALL __MULW12U
@@ -1645,35 +1700,35 @@ _check_confirm_password:
 	LDI  R26,LOW(_tempPassword)
 	LDI  R27,HIGH(_tempPassword)
 	CALL _strcpy
-; 0000 006C         numRegisteredUsers++;
-	MOVW R30,R6
+; 0000 0086         numRegisteredUsers++;
+	MOVW R30,R8
 	ADIW R30,1
-	MOVW R6,R30
-; 0000 006D         send_string("\nRegistration Successful!\n");
-	__POINTW2MN _0x26,0
-	RJMP _0x3B
-; 0000 006E     }
-; 0000 006F     else
-_0x25:
-; 0000 0070     {
-; 0000 0071         send_string("\nRegistration Failed!\n");
-	__POINTW2MN _0x26,27
-_0x3B:
+	MOVW R8,R30
+; 0000 0087         send_string("\nRegistration Successful!\n");
+	__POINTW2MN _0x29,0
+	RJMP _0x42
+; 0000 0088     }
+; 0000 0089     else
+_0x28:
+; 0000 008A     {
+; 0000 008B         send_string("\nRegistration Failed!\n");
+	__POINTW2MN _0x29,27
+_0x42:
 	RCALL _send_string
-; 0000 0072     }
-; 0000 0073     isRegistering = 0;
-	CLR  R10
-	CLR  R11
-; 0000 0074 }
+; 0000 008C     }
+; 0000 008D     isRegistering = 0;
+	CLR  R12
+	CLR  R13
+; 0000 008E }
 	RET
 ; .FEND
 
 	.DSEG
-_0x26:
+_0x29:
 	.BYTE 0x32
 ;
 ;interrupt [USART0_RXC] void usart_rx_isr(void)
-; 0000 0077 {
+; 0000 0091 {
 
 	.CSEG
 _usart_rx_isr:
@@ -1691,88 +1746,88 @@ _usart_rx_isr:
 	ST   -Y,R31
 	IN   R30,SREG
 	ST   -Y,R30
-; 0000 0078     char data = UDR0;
-; 0000 0079     if (data == '\n')
+; 0000 0092     char data = UDR0;
+; 0000 0093     if (data == '\n')
 	ST   -Y,R17
 ;	data -> R17
 	IN   R17,12
 	CPI  R17,10
-	BRNE _0x28
-; 0000 007A     {
-; 0000 007B         inputBuffer[bufferIndex] = '\0'; // Null-terminate the received string
+	BRNE _0x2B
+; 0000 0094     {
+; 0000 0095         inputBuffer[bufferIndex] = '\0'; // Null-terminate the received string
 	LDI  R26,LOW(_inputBuffer)
 	LDI  R27,HIGH(_inputBuffer)
-	ADD  R26,R8
-	ADC  R27,R9
+	ADD  R26,R10
+	ADC  R27,R11
 	LDI  R30,LOW(0)
 	ST   X,R30
-; 0000 007C         if (loggedUser[0] == '\0')
+; 0000 0096         if (loggedUser[0] == '\0')
 	LDS  R30,_loggedUser
 	CPI  R30,0
-	BRNE _0x29
-; 0000 007D         {
-; 0000 007E             if (isRegistering == 0)
-	MOV  R0,R10
-	OR   R0,R11
-	BRNE _0x2A
-; 0000 007F             {
-; 0000 0080                 check_user();
+	BRNE _0x2C
+; 0000 0097         {
+; 0000 0098             if (isRegistering == 0)
+	MOV  R0,R12
+	OR   R0,R13
+	BRNE _0x2D
+; 0000 0099             {
+; 0000 009A                 check_user();
 	RCALL _check_user
-; 0000 0081             }
-; 0000 0082             else if (isRegistering == 1)
-	RJMP _0x2B
-_0x2A:
+; 0000 009B             }
+; 0000 009C             else if (isRegistering == 1)
+	RJMP _0x2E
+_0x2D:
 	LDI  R30,LOW(1)
 	LDI  R31,HIGH(1)
-	CP   R30,R10
-	CPC  R31,R11
-	BRNE _0x2C
-; 0000 0083             {
-; 0000 0084                 check_new_password();
+	CP   R30,R12
+	CPC  R31,R13
+	BRNE _0x2F
+; 0000 009D             {
+; 0000 009E                 check_new_password();
 	RCALL _check_new_password
-; 0000 0085                 isRegistering++;
-	MOVW R30,R10
+; 0000 009F                 isRegistering++;
+	MOVW R30,R12
 	ADIW R30,1
-	MOVW R10,R30
-; 0000 0086             }
-; 0000 0087             else
-	RJMP _0x2D
-_0x2C:
-; 0000 0088             {
-; 0000 0089                 check_confirm_password();
+	MOVW R12,R30
+; 0000 00A0             }
+; 0000 00A1             else
+	RJMP _0x30
+_0x2F:
+; 0000 00A2             {
+; 0000 00A3                 check_confirm_password();
 	RCALL _check_confirm_password
-; 0000 008A             }
-_0x2D:
-_0x2B:
-; 0000 008B         }
-; 0000 008C         else
-	RJMP _0x2E
-_0x29:
-; 0000 008D         {
-; 0000 008E             check_password();
-	RCALL _check_password
-; 0000 008F         }
+; 0000 00A4             }
+_0x30:
 _0x2E:
-; 0000 0090         bufferIndex = 0;
-	CLR  R8
-	CLR  R9
-; 0000 0091     }
-; 0000 0092     else
-	RJMP _0x2F
-_0x28:
-; 0000 0093     {
-; 0000 0094         inputBuffer[bufferIndex] = data;
-	MOVW R30,R8
+; 0000 00A5         }
+; 0000 00A6         else
+	RJMP _0x31
+_0x2C:
+; 0000 00A7         {
+; 0000 00A8             check_password();
+	RCALL _check_password
+; 0000 00A9         }
+_0x31:
+; 0000 00AA         bufferIndex = 0;
+	CLR  R10
+	CLR  R11
+; 0000 00AB     }
+; 0000 00AC     else
+	RJMP _0x32
+_0x2B:
+; 0000 00AD     {
+; 0000 00AE         inputBuffer[bufferIndex] = data;
+	MOVW R30,R10
 	SUBI R30,LOW(-_inputBuffer)
 	SBCI R31,HIGH(-_inputBuffer)
 	ST   Z,R17
-; 0000 0095         bufferIndex++;
-	MOVW R30,R8
+; 0000 00AF         bufferIndex++;
+	MOVW R30,R10
 	ADIW R30,1
-	MOVW R8,R30
-; 0000 0096     }
-_0x2F:
-; 0000 0097 }
+	MOVW R10,R30
+; 0000 00B0     }
+_0x32:
+; 0000 00B1 }
 	LD   R17,Y+
 	LD   R30,Y+
 	OUT  SREG,R30
@@ -1791,54 +1846,139 @@ _0x2F:
 ; .FEND
 ;
 ;void main(void)
-; 0000 009A {
+; 0000 00B4 {
 _main:
 ; .FSTART _main
-; 0000 009B     // Port D is output for LEDs
-; 0000 009C     DDRD.0 = 1;
+; 0000 00B5     // Port D is output for LEDs
+; 0000 00B6     DDRD.0 = 1;
 	SBI  0x11,0
-; 0000 009D     DDRD.1 = 1;
+; 0000 00B7     DDRD.1 = 1;
 	SBI  0x11,1
-; 0000 009E 
-; 0000 009F     // Turn on the LED1
-; 0000 00A0     LED1 = 1;
+; 0000 00B8 
+; 0000 00B9     // Turn on the LED1
+; 0000 00BA     LED1 = 1;
 	SBI  0x12,0
-; 0000 00A1 
-; 0000 00A2     // Initialize USART
-; 0000 00A3     UCSR0A = 0x00;
+; 0000 00BB 
+; 0000 00BC     // Initialize USART
+; 0000 00BD     UCSR0A = 0x00;
 	LDI  R30,LOW(0)
 	OUT  0xB,R30
-; 0000 00A4     UCSR0B = 0x18;
+; 0000 00BE     UCSR0B = 0x18;
 	LDI  R30,LOW(24)
 	OUT  0xA,R30
-; 0000 00A5     UCSR0C = 0x06;
+; 0000 00BF     UCSR0C = 0x06;
 	LDI  R30,LOW(6)
 	STS  149,R30
-; 0000 00A6     UBRR0L = 51; // for 9600 bps with 8MHz clock
+; 0000 00C0     UBRR0L = 51; // for 9600 bps with 8MHz clock
 	LDI  R30,LOW(51)
 	OUT  0x9,R30
-; 0000 00A7 
-; 0000 00A8     // Enable Global Interrupts
-; 0000 00A9     #asm("sei")
+; 0000 00C1 
+; 0000 00C2     // Enable Global Interrupts
+; 0000 00C3     #asm("sei")
 	sei
-; 0000 00AA 
-; 0000 00AB     send_string("Enter Username: ");
-	__POINTW2MN _0x36,0
+; 0000 00C4 
+; 0000 00C5     send_string("Enter Username: ");
+	__POINTW2MN _0x39,0
 	RCALL _send_string
-; 0000 00AC 
-; 0000 00AD     while (1)
-_0x37:
-; 0000 00AE     {
-; 0000 00AF         // Your code here
-; 0000 00B0     }
-	RJMP _0x37
-; 0000 00B1 }
+; 0000 00C6 
+; 0000 00C7     while (1)
 _0x3A:
+; 0000 00C8 {
+; 0000 00C9     if (isMenuOpen == 1)
+	LDS  R26,_isMenuOpen
+	LDS  R27,_isMenuOpen+1
+	SBIW R26,1
+	BRNE _0x3D
+; 0000 00CA     {
+; 0000 00CB         // Display the menu on LCD
+; 0000 00CC         lcd_gotoxy(0, 0);
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDI  R26,LOW(0)
+	CALL _lcd_gotoxy
+; 0000 00CD         lcd_putsf("Menu: ");
+	__POINTW2FN _0x0,214
+	CALL _lcd_putsf
+; 0000 00CE         lcd_gotoxy(0, 1);
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDI  R26,LOW(1)
+	CALL _lcd_gotoxy
+; 0000 00CF         lcd_puts(menuOptions[menuSelection]);
+	LDS  R30,_menuSelection
+	LDS  R31,_menuSelection+1
+	LDI  R26,LOW(_menuOptions)
+	LDI  R27,HIGH(_menuOptions)
+	LSL  R30
+	ROL  R31
+	ADD  R26,R30
+	ADC  R27,R31
+	CALL __GETW1P
+	MOVW R26,R30
+	CALL _lcd_puts
+; 0000 00D0 
+; 0000 00D1         // Display selection on 7-segment
+; 0000 00D2         PORTA = menuSelection + 1;
+	LDS  R30,_menuSelection
+	SUBI R30,-LOW(1)
+	OUT  0x1B,R30
+; 0000 00D3     }
+; 0000 00D4 
+; 0000 00D5     if (PIND & (1 << KEY_PORT))
+_0x3D:
+	IN   R1,16
+	LDI  R30,0
+	SBIC 0x12,2
+	LDI  R30,1
+	LDI  R26,LOW(1)
+	LDI  R27,HIGH(1)
+	CALL __LSLW12
+	MOV  R26,R1
+	LDI  R27,0
+	AND  R30,R26
+	AND  R31,R27
+	SBIW R30,0
+	BREQ _0x3E
+; 0000 00D6     {
+; 0000 00D7         // Menu button is pressed
+; 0000 00D8         if (isMenuOpen == 0)
+	LDS  R30,_isMenuOpen
+	LDS  R31,_isMenuOpen+1
+	SBIW R30,0
+	BRNE _0x3F
+; 0000 00D9         {
+; 0000 00DA             // Open the menu
+; 0000 00DB             isMenuOpen = 1;
+	LDI  R30,LOW(1)
+	LDI  R31,HIGH(1)
+	STS  _isMenuOpen,R30
+	STS  _isMenuOpen+1,R31
+; 0000 00DC         }
+; 0000 00DD         else
+	RJMP _0x40
+_0x3F:
+; 0000 00DE         {
+; 0000 00DF             // Close the menu
+; 0000 00E0             isMenuOpen = 0;
+	LDI  R30,LOW(0)
+	STS  _isMenuOpen,R30
+	STS  _isMenuOpen+1,R30
+; 0000 00E1             PORTA = 0; // Turn off 7-segment
+	OUT  0x1B,R30
+; 0000 00E2         }
+_0x40:
+; 0000 00E3     }
+; 0000 00E4 }
+_0x3E:
 	RJMP _0x3A
+; 0000 00E5 
+; 0000 00E6 }
+_0x41:
+	RJMP _0x41
 ; .FEND
 
 	.DSEG
-_0x36:
+_0x39:
 	.BYTE 0x11
 	#ifndef __SLEEP_DEFINED__
 	#define __SLEEP_DEFINED__
@@ -1920,6 +2060,132 @@ strcpy0:
 	.DSEG
 
 	.CSEG
+__lcd_write_nibble_G103:
+; .FSTART __lcd_write_nibble_G103
+	ST   -Y,R26
+	IN   R30,0x18
+	ANDI R30,LOW(0xF)
+	MOV  R26,R30
+	LD   R30,Y
+	ANDI R30,LOW(0xF0)
+	OR   R30,R26
+	OUT  0x18,R30
+	__DELAY_USB 13
+	SBI  0x18,2
+	__DELAY_USB 13
+	CBI  0x18,2
+	__DELAY_USB 13
+	RJMP _0x20C0002
+; .FEND
+__lcd_write_data:
+; .FSTART __lcd_write_data
+	ST   -Y,R26
+	LD   R26,Y
+	RCALL __lcd_write_nibble_G103
+    ld    r30,y
+    swap  r30
+    st    y,r30
+	LD   R26,Y
+	RCALL __lcd_write_nibble_G103
+	__DELAY_USB 133
+	RJMP _0x20C0002
+; .FEND
+_lcd_gotoxy:
+; .FSTART _lcd_gotoxy
+	ST   -Y,R26
+	LD   R30,Y
+	LDI  R31,0
+	SUBI R30,LOW(-__base_y_G103)
+	SBCI R31,HIGH(-__base_y_G103)
+	LD   R30,Z
+	LDD  R26,Y+1
+	ADD  R26,R30
+	RCALL __lcd_write_data
+	LDD  R30,Y+1
+	STS  __lcd_x,R30
+	LD   R30,Y
+	STS  __lcd_y,R30
+_0x20C0003:
+	ADIW R28,2
+	RET
+; .FEND
+_lcd_putchar:
+; .FSTART _lcd_putchar
+	ST   -Y,R26
+	LD   R26,Y
+	CPI  R26,LOW(0xA)
+	BREQ _0x2060005
+	LDS  R30,__lcd_maxx
+	LDS  R26,__lcd_x
+	CP   R26,R30
+	BRLO _0x2060004
+_0x2060005:
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDS  R26,__lcd_y
+	SUBI R26,-LOW(1)
+	STS  __lcd_y,R26
+	RCALL _lcd_gotoxy
+	LD   R26,Y
+	CPI  R26,LOW(0xA)
+	BREQ _0x20C0002
+_0x2060004:
+	LDS  R30,__lcd_x
+	SUBI R30,-LOW(1)
+	STS  __lcd_x,R30
+	SBI  0x18,0
+	LD   R26,Y
+	RCALL __lcd_write_data
+	CBI  0x18,0
+_0x20C0002:
+	ADIW R28,1
+	RET
+; .FEND
+_lcd_puts:
+; .FSTART _lcd_puts
+	ST   -Y,R27
+	ST   -Y,R26
+	ST   -Y,R17
+_0x2060008:
+	LDD  R26,Y+1
+	LDD  R27,Y+1+1
+	LD   R30,X+
+	STD  Y+1,R26
+	STD  Y+1+1,R27
+	MOV  R17,R30
+	CPI  R30,0
+	BREQ _0x206000A
+	MOV  R26,R17
+	RCALL _lcd_putchar
+	RJMP _0x2060008
+_0x206000A:
+	RJMP _0x20C0001
+; .FEND
+_lcd_putsf:
+; .FSTART _lcd_putsf
+	ST   -Y,R27
+	ST   -Y,R26
+	ST   -Y,R17
+_0x206000B:
+	LDD  R30,Y+1
+	LDD  R31,Y+1+1
+	ADIW R30,1
+	STD  Y+1,R30
+	STD  Y+1+1,R31
+	SBIW R30,1
+	LPM  R30,Z
+	MOV  R17,R30
+	CPI  R30,0
+	BREQ _0x206000D
+	MOV  R26,R17
+	RCALL _lcd_putchar
+	RJMP _0x206000B
+_0x206000D:
+_0x20C0001:
+	LDD  R17,Y+0
+	ADIW R28,3
+	RET
+; .FEND
 
 	.CSEG
 
@@ -1936,10 +2202,20 @@ _tempPassword:
 	.BYTE 0x14
 _loggedUser:
 	.BYTE 0x14
+_menuOptions:
+	.BYTE 0x6
+_isMenuOpen:
+	.BYTE 0x2
+_menuSelection:
+	.BYTE 0x2
 __seed_G101:
 	.BYTE 0x4
 __base_y_G103:
 	.BYTE 0x4
+__lcd_x:
+	.BYTE 0x1
+__lcd_y:
+	.BYTE 0x1
 __lcd_maxx:
 	.BYTE 0x1
 
@@ -1991,6 +2267,19 @@ SUBOPT_0x4:
 
 
 	.CSEG
+__LSLW12:
+	TST  R30
+	MOV  R0,R30
+	MOVW R30,R26
+	BREQ __LSLW12R
+__LSLW12L:
+	LSL  R30
+	ROL  R31
+	DEC  R0
+	BRNE __LSLW12L
+__LSLW12R:
+	RET
+
 __MULW12U:
 	MUL  R31,R26
 	MOV  R31,R0
@@ -1999,6 +2288,12 @@ __MULW12U:
 	MUL  R30,R26
 	MOV  R30,R0
 	ADD  R31,R1
+	RET
+
+__GETW1P:
+	LD   R30,X+
+	LD   R31,X
+	SBIW R26,1
 	RET
 
 ;END OF CODE MARKER

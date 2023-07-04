@@ -1,14 +1,19 @@
 RAM Allocation [bytes]
 Variable                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-predefinedUsers                                                                   0x05C3     160
-registeredUsers                                                                   0x0663     400
-inputBuffer                                                                       0x07F3      20
-tempPassword                                                                      0x0807      20
-loggedUser                                                                        0x081B      20
-_seed                                                                             0x082F       4
-_base_y                                                                           0x0833       4
-_lcd_maxx                                                                         0x0837       1
+predefinedUsers                                                                   0x05FC     160
+registeredUsers                                                                   0x069C     400
+inputBuffer                                                                       0x082C      20
+tempPassword                                                                      0x0840      20
+loggedUser                                                                        0x0854      20
+menuOptions                                                                       0x0868       6
+isMenuOpen                                                                        0x086E       2
+menuSelection                                                                     0x0870       2
+_seed                                                                             0x0872       4
+_base_y                                                                           0x0876       4
+_lcd_x                                                                            0x087A       1
+_lcd_y                                                                            0x087B       1
+_lcd_maxx                                                                         0x087C       1
 
 EEPROM Allocation [bytes]
 Variable                                                                          Address   Size
@@ -17,22 +22,27 @@ Variable                                                                        
 Register Allocation
 Variable                                                                          Register  Size
 ------------------------------------------------------------------------------------------------
-numPredefinedUsers                                                                R4,R5        2
-numRegisteredUsers                                                                R6,R7        2
-bufferIndex                                                                       R8,R9        2
-isRegistering                                                                     R10,R11      2
-_lcd_x                                                                            R13          1
-_lcd_y                                                                            R12          1
+adc_result                                                                        R4,R5        2
+numPredefinedUsers                                                                R6,R7        2
+numRegisteredUsers                                                                R8,R9        2
+bufferIndex                                                                       R10,R11      2
+isRegistering                                                                     R12,R13      2
 
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-send_string                                                                       0x0014C     21
-check_user                                                                        0x00161     55
-check_password                                                                    0x00198     76
-check_new_password                                                                0x001E4     12
-check_confirm_password                                                            0x001F0     30
-usart_rx_isr                                                                      0x0020E     70
-main                                                                              0x00254     18
-strcmp                                                                            0x00266     20
-strcpy                                                                            0x0027A     13
+send_string                                                                       0x0017C     21
+check_user                                                                        0x00191     55
+check_password                                                                    0x001C8     76
+check_new_password                                                                0x00214     12
+check_confirm_password                                                            0x00220     30
+usart_rx_isr                                                                      0x0023E     70
+main                                                                              0x00284     90
+strcmp                                                                            0x002DE     20
+strcpy                                                                            0x002F2     13
+_lcd_write_nibble_G103                                                            0x002FF     20
+_lcd_write_data                                                                   0x00313     12
+lcd_gotoxy                                                                        0x0031F     17
+lcd_putchar                                                                       0x00330     32
+lcd_puts                                                                          0x00350     15
+lcd_putsf                                                                         0x0035F     19
