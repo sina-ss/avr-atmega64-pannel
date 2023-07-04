@@ -85,70 +85,78 @@ _0x4:
 ;char c; //read until new line for clock
 ;// Display the time on LCD
 ;char lcdBuffer[20];
-;// Display the remaining time on LCD
-;char lcdBuffer[20];
 ;//Diration for shutdown
 ;char durationBuffer[10];
 ;int i = 0; //counter for for :)
 ;
-;void send_string(char *str)
-; 0000 0043 {
+;char key;
+;int menuOptionSelected = 0;
+;
+;// Define the keypad layout
+;char keypad[4][4] = { {'1','2','3','A'},
+;                      {'4','5','6','B'},
+;                      {'7','8','9','C'},
+;                      {'*','0','#','D'} };
+;
+;// Read the keypad
+;char read_keypad(void)
+; 0000 004B {
 
 	.CSEG
 ;PCODE: $0000000D VOL: 0
 ;PCODE: $0000000E VOL: 0
-; 0000 0044     while (*str != 0)
+; 0000 004C     int row, col;
+; 0000 004D     for (row = 0; row < 4; row++)
 ;PCODE: $0000000F VOL: 0
-;	*str -> Y+0
+;	row -> R16,R17
+;	col -> R18,R19
 ;PCODE: $00000010 VOL: 0
 ;PCODE: $00000011 VOL: 0
 ;PCODE: $00000012 VOL: 0
 ;PCODE: $00000013 VOL: 0
 ;PCODE: $00000014 VOL: 0
-; 0000 0045     {
-; 0000 0046         while ((UCSR0A & (1 << UDRE0)) == 0);
 ;PCODE: $00000015 VOL: 0
 ;PCODE: $00000016 VOL: 0
 ;PCODE: $00000017 VOL: 0
 ;PCODE: $00000018 VOL: 0
+; 0000 004E     {
+; 0000 004F         // Scan one row at a time
+; 0000 0050         PORTD = 0b00010000 << row;
 ;PCODE: $00000019 VOL: 0
 ;PCODE: $0000001A VOL: 0
-; 0000 0047         UDR0 = *str;
 ;PCODE: $0000001B VOL: 0
 ;PCODE: $0000001C VOL: 0
+; 0000 0051 
+; 0000 0052         // Check each column
+; 0000 0053         for (col = 0; col < 4; col++)
 ;PCODE: $0000001D VOL: 0
-; 0000 0048         str++;
 ;PCODE: $0000001E VOL: 0
 ;PCODE: $0000001F VOL: 0
 ;PCODE: $00000020 VOL: 0
-; 0000 0049     }
 ;PCODE: $00000021 VOL: 0
 ;PCODE: $00000022 VOL: 0
-; 0000 004A }
 ;PCODE: $00000023 VOL: 0
 ;PCODE: $00000024 VOL: 0
 ;PCODE: $00000025 VOL: 0
-;
-;void check_user()
-; 0000 004D {
+; 0000 0054         {
+; 0000 0055             if (!(PIND & (0b0001 << col)))
 ;PCODE: $00000026 VOL: 0
 ;PCODE: $00000027 VOL: 0
-; 0000 004E     int i;
-; 0000 004F     for (i = 0; i < numPredefinedUsers; i++)
 ;PCODE: $00000028 VOL: 0
 ;PCODE: $00000029 VOL: 0
-;	i -> R16,R17
 ;PCODE: $0000002A VOL: 0
 ;PCODE: $0000002B VOL: 0
 ;PCODE: $0000002C VOL: 0
 ;PCODE: $0000002D VOL: 0
 ;PCODE: $0000002E VOL: 0
 ;PCODE: $0000002F VOL: 0
+; 0000 0056             {
+; 0000 0057                 // Debounce the key press
+; 0000 0058                 delay_ms(20);
 ;PCODE: $00000030 VOL: 0
 ;PCODE: $00000031 VOL: 0
 ;PCODE: $00000032 VOL: 0
-; 0000 0050     {
-; 0000 0051         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
+; 0000 0059                 if (!(PIND & (0b0001 << col)))
 ;PCODE: $00000033 VOL: 0
 ;PCODE: $00000034 VOL: 0
 ;PCODE: $00000035 VOL: 0
@@ -157,94 +165,91 @@ _0x4:
 ;PCODE: $00000038 VOL: 0
 ;PCODE: $00000039 VOL: 0
 ;PCODE: $0000003A VOL: 0
-; 0000 0052         {
-; 0000 0053             send_string("\nEnter Password: ");
 ;PCODE: $0000003B VOL: 0
 ;PCODE: $0000003C VOL: 0
+; 0000 005A                 {
+; 0000 005B                     // Return the key value
+; 0000 005C                     return keypad[row][col];
 ;PCODE: $0000003D VOL: 0
-; 0000 0054             return;
 ;PCODE: $0000003E VOL: 0
 ;PCODE: $0000003F VOL: 0
-; 0000 0055         }
-; 0000 0056     }
 ;PCODE: $00000040 VOL: 0
 ;PCODE: $00000041 VOL: 0
 ;PCODE: $00000042 VOL: 0
 ;PCODE: $00000043 VOL: 0
 ;PCODE: $00000044 VOL: 0
 ;PCODE: $00000045 VOL: 0
-; 0000 0057     for (i = 0; i < numRegisteredUsers; i++)
+; 0000 005D                 }
+; 0000 005E             }
 ;PCODE: $00000046 VOL: 0
+; 0000 005F         }
 ;PCODE: $00000047 VOL: 0
 ;PCODE: $00000048 VOL: 0
 ;PCODE: $00000049 VOL: 0
 ;PCODE: $0000004A VOL: 0
 ;PCODE: $0000004B VOL: 0
 ;PCODE: $0000004C VOL: 0
+; 0000 0060     }
 ;PCODE: $0000004D VOL: 0
 ;PCODE: $0000004E VOL: 0
-; 0000 0058     {
-; 0000 0059         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
 ;PCODE: $0000004F VOL: 0
 ;PCODE: $00000050 VOL: 0
 ;PCODE: $00000051 VOL: 0
+; 0000 0061     // If no key is pressed
+; 0000 0062     return '\0';
 ;PCODE: $00000052 VOL: 0
 ;PCODE: $00000053 VOL: 0
 ;PCODE: $00000054 VOL: 0
 ;PCODE: $00000055 VOL: 0
+; 0000 0063 }
 ;PCODE: $00000056 VOL: 0
-; 0000 005A         {
-; 0000 005B             send_string("\nEnter Password: ");
+;
+;void send_string(char *str)
+; 0000 0066 {
 ;PCODE: $00000057 VOL: 0
 ;PCODE: $00000058 VOL: 0
+; 0000 0067     while (*str != 0)
 ;PCODE: $00000059 VOL: 0
-; 0000 005C             return;
+;	*str -> Y+0
 ;PCODE: $0000005A VOL: 0
 ;PCODE: $0000005B VOL: 0
-; 0000 005D         }
-; 0000 005E     }
 ;PCODE: $0000005C VOL: 0
 ;PCODE: $0000005D VOL: 0
 ;PCODE: $0000005E VOL: 0
+; 0000 0068     {
+; 0000 0069         while ((UCSR0A & (1 << UDRE0)) == 0);
 ;PCODE: $0000005F VOL: 0
 ;PCODE: $00000060 VOL: 0
 ;PCODE: $00000061 VOL: 0
-; 0000 005F     // If username not found, register new user
-; 0000 0060     isRegistering = 1;
 ;PCODE: $00000062 VOL: 0
 ;PCODE: $00000063 VOL: 0
-; 0000 0061     strcpy(registeredUsers[numRegisteredUsers].username, inputBuffer);
 ;PCODE: $00000064 VOL: 0
+; 0000 006A         UDR0 = *str;
 ;PCODE: $00000065 VOL: 0
 ;PCODE: $00000066 VOL: 0
 ;PCODE: $00000067 VOL: 0
+; 0000 006B         str++;
 ;PCODE: $00000068 VOL: 0
 ;PCODE: $00000069 VOL: 0
 ;PCODE: $0000006A VOL: 0
-; 0000 0062     send_string("\nNew Password: ");
+; 0000 006C     }
 ;PCODE: $0000006B VOL: 0
 ;PCODE: $0000006C VOL: 0
+; 0000 006D }
 ;PCODE: $0000006D VOL: 0
-; 0000 0063 }
 ;PCODE: $0000006E VOL: 0
 ;PCODE: $0000006F VOL: 0
-;PCODE: $00000070 VOL: 0
-
-	.DSEG
-_0x11:
-	.BYTE 0x34
 ;
-;void check_password()
-; 0000 0066 {
-
-	.CSEG
+;void check_user()
+; 0000 0070 {
+;PCODE: $00000070 VOL: 0
 ;PCODE: $00000071 VOL: 0
+; 0000 0071     int i;
+; 0000 0072     for (i = 0; i < numPredefinedUsers; i++)
 ;PCODE: $00000072 VOL: 0
-; 0000 0067     int i;
-; 0000 0068     for (i = 0; i < numPredefinedUsers; i++)
 ;PCODE: $00000073 VOL: 0
-;PCODE: $00000074 VOL: 0
 ;	i -> R16,R17
+;PCODE: $00000074 VOL: 0
 ;PCODE: $00000075 VOL: 0
 ;PCODE: $00000076 VOL: 0
 ;PCODE: $00000077 VOL: 0
@@ -253,9 +258,9 @@ _0x11:
 ;PCODE: $0000007A VOL: 0
 ;PCODE: $0000007B VOL: 0
 ;PCODE: $0000007C VOL: 0
+; 0000 0073     {
+; 0000 0074         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
 ;PCODE: $0000007D VOL: 0
-; 0000 0069     {
-; 0000 006A         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
 ;PCODE: $0000007E VOL: 0
 ;PCODE: $0000007F VOL: 0
 ;PCODE: $00000080 VOL: 0
@@ -263,60 +268,63 @@ _0x11:
 ;PCODE: $00000082 VOL: 0
 ;PCODE: $00000083 VOL: 0
 ;PCODE: $00000084 VOL: 0
+; 0000 0075         {
+; 0000 0076             send_string("\nEnter Password: ");
 ;PCODE: $00000085 VOL: 0
-; 0000 006B         {
-; 0000 006C             if (strcmp(predefinedUsers[i].password, tempPassword) == 0)
 ;PCODE: $00000086 VOL: 0
 ;PCODE: $00000087 VOL: 0
+; 0000 0077             return;
 ;PCODE: $00000088 VOL: 0
 ;PCODE: $00000089 VOL: 0
+; 0000 0078         }
+; 0000 0079     }
 ;PCODE: $0000008A VOL: 0
 ;PCODE: $0000008B VOL: 0
 ;PCODE: $0000008C VOL: 0
 ;PCODE: $0000008D VOL: 0
 ;PCODE: $0000008E VOL: 0
-; 0000 006D             {
-; 0000 006E                 strcpy(loggedUser, predefinedUsers[i].username);
 ;PCODE: $0000008F VOL: 0
+; 0000 007A     for (i = 0; i < numRegisteredUsers; i++)
 ;PCODE: $00000090 VOL: 0
 ;PCODE: $00000091 VOL: 0
 ;PCODE: $00000092 VOL: 0
 ;PCODE: $00000093 VOL: 0
 ;PCODE: $00000094 VOL: 0
 ;PCODE: $00000095 VOL: 0
-; 0000 006F                 LED2 = 1; // Turn on the LED2
 ;PCODE: $00000096 VOL: 0
 ;PCODE: $00000097 VOL: 0
-; 0000 0070                 send_string("\nLogin Successful!\n");
 ;PCODE: $00000098 VOL: 0
+; 0000 007B     {
+; 0000 007C         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
 ;PCODE: $00000099 VOL: 0
 ;PCODE: $0000009A VOL: 0
-; 0000 0071                 return;
 ;PCODE: $0000009B VOL: 0
 ;PCODE: $0000009C VOL: 0
-; 0000 0072             }
-; 0000 0073         }
 ;PCODE: $0000009D VOL: 0
-; 0000 0074     }
 ;PCODE: $0000009E VOL: 0
 ;PCODE: $0000009F VOL: 0
 ;PCODE: $000000A0 VOL: 0
+; 0000 007D         {
+; 0000 007E             send_string("\nEnter Password: ");
 ;PCODE: $000000A1 VOL: 0
 ;PCODE: $000000A2 VOL: 0
 ;PCODE: $000000A3 VOL: 0
-; 0000 0075     for (i = 0; i < numRegisteredUsers; i++)
+; 0000 007F             return;
 ;PCODE: $000000A4 VOL: 0
 ;PCODE: $000000A5 VOL: 0
+; 0000 0080         }
+; 0000 0081     }
 ;PCODE: $000000A6 VOL: 0
 ;PCODE: $000000A7 VOL: 0
 ;PCODE: $000000A8 VOL: 0
 ;PCODE: $000000A9 VOL: 0
 ;PCODE: $000000AA VOL: 0
 ;PCODE: $000000AB VOL: 0
+; 0000 0082     // If username not found, register new user
+; 0000 0083     isRegistering = 1;
 ;PCODE: $000000AC VOL: 0
-; 0000 0076     {
-; 0000 0077         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
 ;PCODE: $000000AD VOL: 0
+; 0000 0084     strcpy(registeredUsers[numRegisteredUsers].username, inputBuffer);
 ;PCODE: $000000AE VOL: 0
 ;PCODE: $000000AF VOL: 0
 ;PCODE: $000000B0 VOL: 0
@@ -324,100 +332,90 @@ _0x11:
 ;PCODE: $000000B2 VOL: 0
 ;PCODE: $000000B3 VOL: 0
 ;PCODE: $000000B4 VOL: 0
-; 0000 0078         {
-; 0000 0079             if (strcmp(registeredUsers[i].password, tempPassword) == 0)
+; 0000 0085     send_string("\nNew Password: ");
 ;PCODE: $000000B5 VOL: 0
 ;PCODE: $000000B6 VOL: 0
 ;PCODE: $000000B7 VOL: 0
+; 0000 0086 }
 ;PCODE: $000000B8 VOL: 0
 ;PCODE: $000000B9 VOL: 0
 ;PCODE: $000000BA VOL: 0
+
+	.DSEG
+_0x1A:
+	.BYTE 0x34
+;
+;void check_password()
+; 0000 0089 {
+
+	.CSEG
 ;PCODE: $000000BB VOL: 0
 ;PCODE: $000000BC VOL: 0
+; 0000 008A     int i;
+; 0000 008B     for (i = 0; i < numPredefinedUsers; i++)
 ;PCODE: $000000BD VOL: 0
-; 0000 007A             {
-; 0000 007B                 strcpy(loggedUser, registeredUsers[i].username);
 ;PCODE: $000000BE VOL: 0
+;	i -> R16,R17
 ;PCODE: $000000BF VOL: 0
 ;PCODE: $000000C0 VOL: 0
 ;PCODE: $000000C1 VOL: 0
 ;PCODE: $000000C2 VOL: 0
 ;PCODE: $000000C3 VOL: 0
 ;PCODE: $000000C4 VOL: 0
-; 0000 007C                 LED2 = 1; // Turn on the LED2
 ;PCODE: $000000C5 VOL: 0
 ;PCODE: $000000C6 VOL: 0
-; 0000 007D                 send_string("\nLogin Successful!\n");
 ;PCODE: $000000C7 VOL: 0
+; 0000 008C     {
+; 0000 008D         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
 ;PCODE: $000000C8 VOL: 0
 ;PCODE: $000000C9 VOL: 0
-; 0000 007E                 return;
 ;PCODE: $000000CA VOL: 0
 ;PCODE: $000000CB VOL: 0
-; 0000 007F             }
-; 0000 0080         }
 ;PCODE: $000000CC VOL: 0
-; 0000 0081     }
 ;PCODE: $000000CD VOL: 0
 ;PCODE: $000000CE VOL: 0
 ;PCODE: $000000CF VOL: 0
+; 0000 008E         {
+; 0000 008F             if (strcmp(predefinedUsers[i].password, tempPassword) == 0)
 ;PCODE: $000000D0 VOL: 0
 ;PCODE: $000000D1 VOL: 0
 ;PCODE: $000000D2 VOL: 0
-; 0000 0082     send_string("\nLogin Failed!\n");
 ;PCODE: $000000D3 VOL: 0
 ;PCODE: $000000D4 VOL: 0
 ;PCODE: $000000D5 VOL: 0
-; 0000 0083     LED2 = 0; // Turn off the LED2
 ;PCODE: $000000D6 VOL: 0
 ;PCODE: $000000D7 VOL: 0
-; 0000 0084 }
 ;PCODE: $000000D8 VOL: 0
+; 0000 0090             {
+; 0000 0091                 strcpy(loggedUser, predefinedUsers[i].username);
 ;PCODE: $000000D9 VOL: 0
 ;PCODE: $000000DA VOL: 0
-
-	.DSEG
-_0x1D:
-	.BYTE 0x38
-;
-;void check_new_password()
-; 0000 0087 {
-
-	.CSEG
 ;PCODE: $000000DB VOL: 0
 ;PCODE: $000000DC VOL: 0
-; 0000 0088     strcpy(tempPassword, inputBuffer);
 ;PCODE: $000000DD VOL: 0
 ;PCODE: $000000DE VOL: 0
 ;PCODE: $000000DF VOL: 0
+; 0000 0092                 LED2 = 1; // Turn on the LED2
 ;PCODE: $000000E0 VOL: 0
-; 0000 0089     send_string("\nConfirm Password: ");
 ;PCODE: $000000E1 VOL: 0
+; 0000 0093                 send_string("\nLogin Successful!\n");
 ;PCODE: $000000E2 VOL: 0
 ;PCODE: $000000E3 VOL: 0
-; 0000 008A }
 ;PCODE: $000000E4 VOL: 0
+; 0000 0094                 return;
 ;PCODE: $000000E5 VOL: 0
-
-	.DSEG
-_0x27:
-	.BYTE 0x14
-;
-;void check_confirm_password()
-; 0000 008D {
-
-	.CSEG
 ;PCODE: $000000E6 VOL: 0
+; 0000 0095             }
+; 0000 0096         }
 ;PCODE: $000000E7 VOL: 0
-; 0000 008E     if (strcmp(tempPassword, inputBuffer) == 0)
+; 0000 0097     }
 ;PCODE: $000000E8 VOL: 0
 ;PCODE: $000000E9 VOL: 0
 ;PCODE: $000000EA VOL: 0
 ;PCODE: $000000EB VOL: 0
 ;PCODE: $000000EC VOL: 0
 ;PCODE: $000000ED VOL: 0
-; 0000 008F     {
-; 0000 0090         strcpy(registeredUsers[numRegisteredUsers].password, tempPassword);
+; 0000 0098     for (i = 0; i < numRegisteredUsers; i++)
 ;PCODE: $000000EE VOL: 0
 ;PCODE: $000000EF VOL: 0
 ;PCODE: $000000F0 VOL: 0
@@ -426,305 +424,313 @@ _0x27:
 ;PCODE: $000000F3 VOL: 0
 ;PCODE: $000000F4 VOL: 0
 ;PCODE: $000000F5 VOL: 0
-; 0000 0091         numRegisteredUsers++;
 ;PCODE: $000000F6 VOL: 0
+; 0000 0099     {
+; 0000 009A         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
 ;PCODE: $000000F7 VOL: 0
 ;PCODE: $000000F8 VOL: 0
-; 0000 0092         send_string("\nRegistration Successful!\n");
 ;PCODE: $000000F9 VOL: 0
 ;PCODE: $000000FA VOL: 0
 ;PCODE: $000000FB VOL: 0
-; 0000 0093     }
-; 0000 0094     else
 ;PCODE: $000000FC VOL: 0
 ;PCODE: $000000FD VOL: 0
-; 0000 0095     {
-; 0000 0096         send_string("\nRegistration Failed!\n");
 ;PCODE: $000000FE VOL: 0
+; 0000 009B         {
+; 0000 009C             if (strcmp(registeredUsers[i].password, tempPassword) == 0)
 ;PCODE: $000000FF VOL: 0
 ;PCODE: $00000100 VOL: 0
-; 0000 0097     }
 ;PCODE: $00000101 VOL: 0
-; 0000 0098     isRegistering = 0;
 ;PCODE: $00000102 VOL: 0
-; 0000 0099 }
 ;PCODE: $00000103 VOL: 0
 ;PCODE: $00000104 VOL: 0
-
-	.DSEG
-_0x29:
-	.BYTE 0x32
-;
-;interrupt [USART0_RXC] void usart_rx_isr(void)
-; 0000 009C {
-
-	.CSEG
 ;PCODE: $00000105 VOL: 0
 ;PCODE: $00000106 VOL: 0
-; 0000 009D     char data = UDR0;
-; 0000 009E     if (data == '\n')
 ;PCODE: $00000107 VOL: 0
-;	data -> R17
+; 0000 009D             {
+; 0000 009E                 strcpy(loggedUser, registeredUsers[i].username);
 ;PCODE: $00000108 VOL: 0
 ;PCODE: $00000109 VOL: 0
 ;PCODE: $0000010A VOL: 0
 ;PCODE: $0000010B VOL: 0
 ;PCODE: $0000010C VOL: 0
-; 0000 009F     {
-; 0000 00A0         inputBuffer[bufferIndex] = '\0'; // Null-terminate the received string
 ;PCODE: $0000010D VOL: 0
 ;PCODE: $0000010E VOL: 0
+; 0000 009F                 LED2 = 1; // Turn on the LED2
 ;PCODE: $0000010F VOL: 0
 ;PCODE: $00000110 VOL: 0
-; 0000 00A1         if (loggedUser[0] == '\0')
+; 0000 00A0                 send_string("\nLogin Successful!\n");
 ;PCODE: $00000111 VOL: 0
 ;PCODE: $00000112 VOL: 0
 ;PCODE: $00000113 VOL: 0
-; 0000 00A2         {
-; 0000 00A3             if (isRegistering == 0)
+; 0000 00A1                 return;
 ;PCODE: $00000114 VOL: 0
 ;PCODE: $00000115 VOL: 0
-; 0000 00A4             {
-; 0000 00A5                 check_user();
+; 0000 00A2             }
+; 0000 00A3         }
 ;PCODE: $00000116 VOL: 0
-; 0000 00A6             }
-; 0000 00A7             else if (isRegistering == 1)
+; 0000 00A4     }
 ;PCODE: $00000117 VOL: 0
 ;PCODE: $00000118 VOL: 0
 ;PCODE: $00000119 VOL: 0
 ;PCODE: $0000011A VOL: 0
 ;PCODE: $0000011B VOL: 0
-; 0000 00A8             {
-; 0000 00A9                 check_new_password();
 ;PCODE: $0000011C VOL: 0
-; 0000 00AA                 isRegistering++;
+; 0000 00A5     send_string("\nLogin Failed!\n");
 ;PCODE: $0000011D VOL: 0
 ;PCODE: $0000011E VOL: 0
 ;PCODE: $0000011F VOL: 0
-; 0000 00AB             }
-; 0000 00AC             else
+; 0000 00A6     LED2 = 0; // Turn off the LED2
 ;PCODE: $00000120 VOL: 0
 ;PCODE: $00000121 VOL: 0
-; 0000 00AD             {
-; 0000 00AE                 check_confirm_password();
+; 0000 00A7 }
 ;PCODE: $00000122 VOL: 0
-; 0000 00AF             }
 ;PCODE: $00000123 VOL: 0
 ;PCODE: $00000124 VOL: 0
-; 0000 00B0         }
-; 0000 00B1         else
+
+	.DSEG
+_0x26:
+	.BYTE 0x38
+;
+;void check_new_password()
+; 0000 00AA {
+
+	.CSEG
 ;PCODE: $00000125 VOL: 0
 ;PCODE: $00000126 VOL: 0
-; 0000 00B2         {
-; 0000 00B3             check_password();
+; 0000 00AB     strcpy(tempPassword, inputBuffer);
 ;PCODE: $00000127 VOL: 0
-; 0000 00B4         }
 ;PCODE: $00000128 VOL: 0
-; 0000 00B5         bufferIndex = 0;
 ;PCODE: $00000129 VOL: 0
-; 0000 00B6     }
-; 0000 00B7     else
 ;PCODE: $0000012A VOL: 0
+; 0000 00AC     send_string("\nConfirm Password: ");
 ;PCODE: $0000012B VOL: 0
-; 0000 00B8     {
-; 0000 00B9         inputBuffer[bufferIndex] = data;
 ;PCODE: $0000012C VOL: 0
 ;PCODE: $0000012D VOL: 0
+; 0000 00AD }
 ;PCODE: $0000012E VOL: 0
-; 0000 00BA         bufferIndex++;
 ;PCODE: $0000012F VOL: 0
+
+	.DSEG
+_0x30:
+	.BYTE 0x14
+;
+;void check_confirm_password()
+; 0000 00B0 {
+
+	.CSEG
 ;PCODE: $00000130 VOL: 0
 ;PCODE: $00000131 VOL: 0
-; 0000 00BB     }
+; 0000 00B1     if (strcmp(tempPassword, inputBuffer) == 0)
 ;PCODE: $00000132 VOL: 0
-; 0000 00BC }
 ;PCODE: $00000133 VOL: 0
 ;PCODE: $00000134 VOL: 0
 ;PCODE: $00000135 VOL: 0
 ;PCODE: $00000136 VOL: 0
-;
-;unsigned char get7SegmentCode(unsigned char digit)
-; 0000 00BF {
 ;PCODE: $00000137 VOL: 0
+; 0000 00B2     {
+; 0000 00B3         strcpy(registeredUsers[numRegisteredUsers].password, tempPassword);
 ;PCODE: $00000138 VOL: 0
-; 0000 00C0     unsigned char segmentCodes[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
-; 0000 00C1     if (digit < 10)
 ;PCODE: $00000139 VOL: 0
 ;PCODE: $0000013A VOL: 0
 ;PCODE: $0000013B VOL: 0
 ;PCODE: $0000013C VOL: 0
 ;PCODE: $0000013D VOL: 0
 ;PCODE: $0000013E VOL: 0
-;	digit -> Y+10
-;	segmentCodes -> Y+0
 ;PCODE: $0000013F VOL: 0
+; 0000 00B4         numRegisteredUsers++;
 ;PCODE: $00000140 VOL: 0
 ;PCODE: $00000141 VOL: 0
-; 0000 00C2         return segmentCodes[digit];
 ;PCODE: $00000142 VOL: 0
+; 0000 00B5         send_string("\nRegistration Successful!\n");
 ;PCODE: $00000143 VOL: 0
 ;PCODE: $00000144 VOL: 0
 ;PCODE: $00000145 VOL: 0
+; 0000 00B6     }
+; 0000 00B7     else
 ;PCODE: $00000146 VOL: 0
 ;PCODE: $00000147 VOL: 0
+; 0000 00B8     {
+; 0000 00B9         send_string("\nRegistration Failed!\n");
 ;PCODE: $00000148 VOL: 0
-; 0000 00C3     return 0;
 ;PCODE: $00000149 VOL: 0
 ;PCODE: $0000014A VOL: 0
+; 0000 00BA     }
 ;PCODE: $0000014B VOL: 0
+; 0000 00BB     isRegistering = 0;
 ;PCODE: $0000014C VOL: 0
-; 0000 00C4 }
+; 0000 00BC }
 ;PCODE: $0000014D VOL: 0
-;
-;void display_on_7segment(float voltage)
-; 0000 00C7 {
 ;PCODE: $0000014E VOL: 0
-;PCODE: $0000014F VOL: 0
-; 0000 00C8     static unsigned char digitIndex = 0;
-; 0000 00C9     static unsigned int digitCodes[4] = {0};
-; 0000 00CA 
-; 0000 00CB     // Calculate digit codes once when voltage changes
-; 0000 00CC     static float lastVoltage = -1.0f;
 
 	.DSEG
+_0x32:
+	.BYTE 0x32
+;
+;interrupt [USART0_RXC] void usart_rx_isr(void)
+; 0000 00BF {
 
 	.CSEG
-; 0000 00CD     if (voltage != lastVoltage)
+;PCODE: $0000014F VOL: 0
 ;PCODE: $00000150 VOL: 0
-;	voltage -> Y+0
+; 0000 00C0     char data = UDR0;
+; 0000 00C1     if (data == '\n')
 ;PCODE: $00000151 VOL: 0
+;	data -> R17
 ;PCODE: $00000152 VOL: 0
 ;PCODE: $00000153 VOL: 0
 ;PCODE: $00000154 VOL: 0
-; 0000 00CE     {
-; 0000 00CF         int intVoltage = (int)(voltage * 100);  // Convert to integer to avoid floating point division
-; 0000 00D0         digitCodes[0] = get7SegmentCode(intVoltage / 1000);  // Thousands
 ;PCODE: $00000155 VOL: 0
-;	voltage -> Y+2
-;	intVoltage -> Y+0
 ;PCODE: $00000156 VOL: 0
+; 0000 00C2     {
+; 0000 00C3         inputBuffer[bufferIndex] = '\0'; // Null-terminate the received string
 ;PCODE: $00000157 VOL: 0
 ;PCODE: $00000158 VOL: 0
 ;PCODE: $00000159 VOL: 0
 ;PCODE: $0000015A VOL: 0
+; 0000 00C4         if (loggedUser[0] == '\0')
 ;PCODE: $0000015B VOL: 0
 ;PCODE: $0000015C VOL: 0
 ;PCODE: $0000015D VOL: 0
+; 0000 00C5         {
+; 0000 00C6             if (isRegistering == 0)
 ;PCODE: $0000015E VOL: 0
 ;PCODE: $0000015F VOL: 0
+; 0000 00C7             {
+; 0000 00C8                 check_user();
 ;PCODE: $00000160 VOL: 0
+; 0000 00C9             }
+; 0000 00CA             else if (isRegistering == 1)
 ;PCODE: $00000161 VOL: 0
-; 0000 00D1         digitCodes[1] = get7SegmentCode((intVoltage % 1000) / 100);  // Hundreds
 ;PCODE: $00000162 VOL: 0
 ;PCODE: $00000163 VOL: 0
 ;PCODE: $00000164 VOL: 0
 ;PCODE: $00000165 VOL: 0
+; 0000 00CB             {
+; 0000 00CC                 check_new_password();
 ;PCODE: $00000166 VOL: 0
+; 0000 00CD                 isRegistering++;
 ;PCODE: $00000167 VOL: 0
 ;PCODE: $00000168 VOL: 0
 ;PCODE: $00000169 VOL: 0
+; 0000 00CE             }
+; 0000 00CF             else
 ;PCODE: $0000016A VOL: 0
 ;PCODE: $0000016B VOL: 0
+; 0000 00D0             {
+; 0000 00D1                 check_confirm_password();
 ;PCODE: $0000016C VOL: 0
+; 0000 00D2             }
 ;PCODE: $0000016D VOL: 0
-; 0000 00D2         digitCodes[2] = get7SegmentCode((intVoltage % 100) / 10);  // Tens
 ;PCODE: $0000016E VOL: 0
+; 0000 00D3         }
+; 0000 00D4         else
 ;PCODE: $0000016F VOL: 0
 ;PCODE: $00000170 VOL: 0
+; 0000 00D5         {
+; 0000 00D6             check_password();
 ;PCODE: $00000171 VOL: 0
+; 0000 00D7         }
 ;PCODE: $00000172 VOL: 0
+; 0000 00D8         bufferIndex = 0;
 ;PCODE: $00000173 VOL: 0
+; 0000 00D9     }
+; 0000 00DA     else
 ;PCODE: $00000174 VOL: 0
 ;PCODE: $00000175 VOL: 0
+; 0000 00DB     {
+; 0000 00DC         inputBuffer[bufferIndex] = data;
 ;PCODE: $00000176 VOL: 0
 ;PCODE: $00000177 VOL: 0
 ;PCODE: $00000178 VOL: 0
+; 0000 00DD         bufferIndex++;
 ;PCODE: $00000179 VOL: 0
-; 0000 00D3         digitCodes[3] = get7SegmentCode(intVoltage % 10);  // Ones
 ;PCODE: $0000017A VOL: 0
 ;PCODE: $0000017B VOL: 0
+; 0000 00DE     }
 ;PCODE: $0000017C VOL: 0
+; 0000 00DF }
 ;PCODE: $0000017D VOL: 0
 ;PCODE: $0000017E VOL: 0
 ;PCODE: $0000017F VOL: 0
 ;PCODE: $00000180 VOL: 0
+;
+;unsigned char get7SegmentCode(unsigned char digit)
+; 0000 00E2 {
 ;PCODE: $00000181 VOL: 0
 ;PCODE: $00000182 VOL: 0
-; 0000 00D4         lastVoltage = voltage;
+; 0000 00E3     unsigned char segmentCodes[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
+; 0000 00E4     if (digit < 10)
 ;PCODE: $00000183 VOL: 0
 ;PCODE: $00000184 VOL: 0
-; 0000 00D5     }
 ;PCODE: $00000185 VOL: 0
-; 0000 00D6 
-; 0000 00D7     // Turn off all digits
-; 0000 00D8     PORTA = 0;
 ;PCODE: $00000186 VOL: 0
 ;PCODE: $00000187 VOL: 0
 ;PCODE: $00000188 VOL: 0
-; 0000 00D9 
-; 0000 00DA     // Set segments
-; 0000 00DB     PORTA = digitCodes[digitIndex];
+;	digit -> Y+10
+;	segmentCodes -> Y+0
 ;PCODE: $00000189 VOL: 0
 ;PCODE: $0000018A VOL: 0
 ;PCODE: $0000018B VOL: 0
+; 0000 00E5         return segmentCodes[digit];
 ;PCODE: $0000018C VOL: 0
 ;PCODE: $0000018D VOL: 0
 ;PCODE: $0000018E VOL: 0
 ;PCODE: $0000018F VOL: 0
-; 0000 00DC 
-; 0000 00DD     // Turn on the current digit
-; 0000 00DE     PORTA |= (1 << (digitIndex + 4));
 ;PCODE: $00000190 VOL: 0
 ;PCODE: $00000191 VOL: 0
 ;PCODE: $00000192 VOL: 0
+; 0000 00E6     return 0;
 ;PCODE: $00000193 VOL: 0
 ;PCODE: $00000194 VOL: 0
 ;PCODE: $00000195 VOL: 0
 ;PCODE: $00000196 VOL: 0
+; 0000 00E7 }
 ;PCODE: $00000197 VOL: 0
-; 0000 00DF 
-; 0000 00E0     // Go to the next digit
-; 0000 00E1     digitIndex = (digitIndex + 1) % 4;
+;
+;void display_on_7segment(float voltage)
+; 0000 00EA {
 ;PCODE: $00000198 VOL: 0
 ;PCODE: $00000199 VOL: 0
+; 0000 00EB     static unsigned char digitIndex = 0;
+; 0000 00EC     static unsigned int digitCodes[4] = {0};
+; 0000 00ED 
+; 0000 00EE     // Calculate digit codes once when voltage changes
+; 0000 00EF     static float lastVoltage = -1.0f;
+
+	.DSEG
+
+	.CSEG
+; 0000 00F0     if (voltage != lastVoltage)
 ;PCODE: $0000019A VOL: 0
+;	voltage -> Y+0
 ;PCODE: $0000019B VOL: 0
 ;PCODE: $0000019C VOL: 0
 ;PCODE: $0000019D VOL: 0
-; 0000 00E2 }
 ;PCODE: $0000019E VOL: 0
+; 0000 00F1     {
+; 0000 00F2         int intVoltage = (int)(voltage * 100);  // Convert to integer to avoid floating point division
+; 0000 00F3         digitCodes[0] = get7SegmentCode(intVoltage / 1000);  // Thousands
 ;PCODE: $0000019F VOL: 0
+;	voltage -> Y+2
+;	intVoltage -> Y+0
 ;PCODE: $000001A0 VOL: 0
-;
-;void measure_voltage()
-; 0000 00E5 {
 ;PCODE: $000001A1 VOL: 0
 ;PCODE: $000001A2 VOL: 0
-; 0000 00E6     // Start the ADC conversion
-; 0000 00E7     ADCSRA |= (1 << ADSC);
 ;PCODE: $000001A3 VOL: 0
 ;PCODE: $000001A4 VOL: 0
-; 0000 00E8 
-; 0000 00E9     // Wait for conversion to complete
-; 0000 00EA     while (ADCSRA & (1 << ADSC));
 ;PCODE: $000001A5 VOL: 0
 ;PCODE: $000001A6 VOL: 0
 ;PCODE: $000001A7 VOL: 0
 ;PCODE: $000001A8 VOL: 0
 ;PCODE: $000001A9 VOL: 0
 ;PCODE: $000001AA VOL: 0
-; 0000 00EB 
-; 0000 00EC     // Get the result
-; 0000 00ED     adc_result = ADCL | (ADCH << 8);
 ;PCODE: $000001AB VOL: 0
+; 0000 00F4         digitCodes[1] = get7SegmentCode((intVoltage % 1000) / 100);  // Hundreds
 ;PCODE: $000001AC VOL: 0
 ;PCODE: $000001AD VOL: 0
 ;PCODE: $000001AE VOL: 0
 ;PCODE: $000001AF VOL: 0
 ;PCODE: $000001B0 VOL: 0
-; 0000 00EE 
-; 0000 00EF     // Display the voltage on the 7-segment display and LCD
-; 0000 00F0     voltage = (adc_result / 1024.0) * 5;
 ;PCODE: $000001B1 VOL: 0
 ;PCODE: $000001B2 VOL: 0
 ;PCODE: $000001B3 VOL: 0
@@ -732,13 +738,12 @@ _0x29:
 ;PCODE: $000001B5 VOL: 0
 ;PCODE: $000001B6 VOL: 0
 ;PCODE: $000001B7 VOL: 0
+; 0000 00F5         digitCodes[2] = get7SegmentCode((intVoltage % 100) / 10);  // Tens
 ;PCODE: $000001B8 VOL: 0
-; 0000 00F1     lcd_gotoxy(0, 1);
 ;PCODE: $000001B9 VOL: 0
 ;PCODE: $000001BA VOL: 0
 ;PCODE: $000001BB VOL: 0
 ;PCODE: $000001BC VOL: 0
-; 0000 00F2     sprintf(voltageStr, "Voltage: %.2fV", voltage);
 ;PCODE: $000001BD VOL: 0
 ;PCODE: $000001BE VOL: 0
 ;PCODE: $000001BF VOL: 0
@@ -746,95 +751,105 @@ _0x29:
 ;PCODE: $000001C1 VOL: 0
 ;PCODE: $000001C2 VOL: 0
 ;PCODE: $000001C3 VOL: 0
+; 0000 00F6         digitCodes[3] = get7SegmentCode(intVoltage % 10);  // Ones
 ;PCODE: $000001C4 VOL: 0
 ;PCODE: $000001C5 VOL: 0
 ;PCODE: $000001C6 VOL: 0
 ;PCODE: $000001C7 VOL: 0
-; 0000 00F3     lcd_puts(voltageStr);
 ;PCODE: $000001C8 VOL: 0
 ;PCODE: $000001C9 VOL: 0
-; 0000 00F4 
-; 0000 00F5 
-; 0000 00F6     // Assuming you have a function to display numbers on 7-segment
-; 0000 00F7     display_on_7segment(voltage);
 ;PCODE: $000001CA VOL: 0
 ;PCODE: $000001CB VOL: 0
-; 0000 00F8 }
 ;PCODE: $000001CC VOL: 0
+; 0000 00F7         lastVoltage = voltage;
 ;PCODE: $000001CD VOL: 0
-;
-;void set_clock()
-; 0000 00FB {
 ;PCODE: $000001CE VOL: 0
+; 0000 00F8     }
 ;PCODE: $000001CF VOL: 0
-; 0000 00FC     // Ask the user to input time
-; 0000 00FD     send_string("\nEnter time (HH:MM:SS): ");
+; 0000 00F9 
+; 0000 00FA     // Turn off all digits
+; 0000 00FB     PORTA = 0;
 ;PCODE: $000001D0 VOL: 0
 ;PCODE: $000001D1 VOL: 0
 ;PCODE: $000001D2 VOL: 0
-; 0000 00FE     while (c = UDR0, c != '\n') // read until newline
+; 0000 00FC 
+; 0000 00FD     // Set segments
+; 0000 00FE     PORTA = digitCodes[digitIndex];
 ;PCODE: $000001D3 VOL: 0
 ;PCODE: $000001D4 VOL: 0
 ;PCODE: $000001D5 VOL: 0
 ;PCODE: $000001D6 VOL: 0
 ;PCODE: $000001D7 VOL: 0
 ;PCODE: $000001D8 VOL: 0
-; 0000 00FF     {
-; 0000 0100         strncat(timeBuffer, &c, 1);
 ;PCODE: $000001D9 VOL: 0
+; 0000 00FF 
+; 0000 0100     // Turn on the current digit
+; 0000 0101     PORTA |= (1 << (digitIndex + 4));
 ;PCODE: $000001DA VOL: 0
 ;PCODE: $000001DB VOL: 0
 ;PCODE: $000001DC VOL: 0
 ;PCODE: $000001DD VOL: 0
 ;PCODE: $000001DE VOL: 0
-; 0000 0101     }
 ;PCODE: $000001DF VOL: 0
 ;PCODE: $000001E0 VOL: 0
-; 0000 0102     // Remove newline character from fgets
-; 0000 0103     timeBuffer[strcspn(timeBuffer, "\n")] = 0;
 ;PCODE: $000001E1 VOL: 0
+; 0000 0102 
+; 0000 0103     // Go to the next digit
+; 0000 0104     digitIndex = (digitIndex + 1) % 4;
 ;PCODE: $000001E2 VOL: 0
 ;PCODE: $000001E3 VOL: 0
 ;PCODE: $000001E4 VOL: 0
 ;PCODE: $000001E5 VOL: 0
 ;PCODE: $000001E6 VOL: 0
 ;PCODE: $000001E7 VOL: 0
+; 0000 0105 }
 ;PCODE: $000001E8 VOL: 0
-; 0000 0104 
-; 0000 0105     sscanf(timeBuffer, "%d:%d:%d", &currentTime.hours, &currentTime.minutes, &currentTime.seconds);
 ;PCODE: $000001E9 VOL: 0
 ;PCODE: $000001EA VOL: 0
+;
+;void measure_voltage()
+; 0000 0108 {
 ;PCODE: $000001EB VOL: 0
 ;PCODE: $000001EC VOL: 0
+; 0000 0109     // Start the ADC conversion
+; 0000 010A     ADCSRA |= (1 << ADSC);
 ;PCODE: $000001ED VOL: 0
 ;PCODE: $000001EE VOL: 0
+; 0000 010B 
+; 0000 010C     // Wait for conversion to complete
+; 0000 010D     while (ADCSRA & (1 << ADSC));
 ;PCODE: $000001EF VOL: 0
 ;PCODE: $000001F0 VOL: 0
 ;PCODE: $000001F1 VOL: 0
 ;PCODE: $000001F2 VOL: 0
 ;PCODE: $000001F3 VOL: 0
 ;PCODE: $000001F4 VOL: 0
+; 0000 010E 
+; 0000 010F     // Get the result
+; 0000 0110     adc_result = ADCL | (ADCH << 8);
 ;PCODE: $000001F5 VOL: 0
 ;PCODE: $000001F6 VOL: 0
 ;PCODE: $000001F7 VOL: 0
 ;PCODE: $000001F8 VOL: 0
 ;PCODE: $000001F9 VOL: 0
 ;PCODE: $000001FA VOL: 0
+; 0000 0111 
+; 0000 0112     // Display the voltage on the 7-segment display and LCD
+; 0000 0113     voltage = (adc_result / 1024.0) * 5;
 ;PCODE: $000001FB VOL: 0
 ;PCODE: $000001FC VOL: 0
-; 0000 0106 
-; 0000 0107     // Display the time on LCD
-; 0000 0108     sprintf(lcdBuffer, "Time: %02d:%02d:%02d", currentTime.hours, currentTime.minutes, currentTime.seconds);
 ;PCODE: $000001FD VOL: 0
 ;PCODE: $000001FE VOL: 0
 ;PCODE: $000001FF VOL: 0
 ;PCODE: $00000200 VOL: 0
 ;PCODE: $00000201 VOL: 0
 ;PCODE: $00000202 VOL: 0
+; 0000 0114     lcd_gotoxy(0, 1);
 ;PCODE: $00000203 VOL: 0
 ;PCODE: $00000204 VOL: 0
 ;PCODE: $00000205 VOL: 0
 ;PCODE: $00000206 VOL: 0
+; 0000 0115     sprintf(voltageStr, "Voltage: %.2fV", voltage);
 ;PCODE: $00000207 VOL: 0
 ;PCODE: $00000208 VOL: 0
 ;PCODE: $00000209 VOL: 0
@@ -845,52 +860,50 @@ _0x29:
 ;PCODE: $0000020E VOL: 0
 ;PCODE: $0000020F VOL: 0
 ;PCODE: $00000210 VOL: 0
-; 0000 0109     lcd_gotoxy(0, 1);
 ;PCODE: $00000211 VOL: 0
+; 0000 0116     lcd_puts(voltageStr);
 ;PCODE: $00000212 VOL: 0
 ;PCODE: $00000213 VOL: 0
+; 0000 0117 
+; 0000 0118 
+; 0000 0119     // Assuming you have a function to display numbers on 7-segment
+; 0000 011A     display_on_7segment(voltage);
 ;PCODE: $00000214 VOL: 0
-; 0000 010A     lcd_puts(lcdBuffer);
 ;PCODE: $00000215 VOL: 0
+; 0000 011B }
 ;PCODE: $00000216 VOL: 0
-; 0000 010B }
 ;PCODE: $00000217 VOL: 0
-;PCODE: $00000218 VOL: 0
-
-	.DSEG
-_0x3A:
-	.BYTE 0x1B
 ;
-;void auto_shutdown()
-; 0000 010E {
-
-	.CSEG
+;void set_clock()
+; 0000 011E {
+;PCODE: $00000218 VOL: 0
 ;PCODE: $00000219 VOL: 0
+; 0000 011F     // Ask the user to input time
+; 0000 0120     send_string("\nEnter time (HH:MM:SS): ");
 ;PCODE: $0000021A VOL: 0
-; 0000 010F     // Ask the user to input shutdown duration
-; 0000 0110     send_string("\nEnter shutdown duration (MM:SS): ");
 ;PCODE: $0000021B VOL: 0
 ;PCODE: $0000021C VOL: 0
+; 0000 0121     while (c = UDR0, c != '\n') // read until newline
 ;PCODE: $0000021D VOL: 0
-; 0000 0111     while (c = UDR0, c != '\n') // read until newline
 ;PCODE: $0000021E VOL: 0
 ;PCODE: $0000021F VOL: 0
 ;PCODE: $00000220 VOL: 0
 ;PCODE: $00000221 VOL: 0
 ;PCODE: $00000222 VOL: 0
+; 0000 0122     {
+; 0000 0123         strncat(timeBuffer, &c, 1);
 ;PCODE: $00000223 VOL: 0
-; 0000 0112     {
-; 0000 0113         strncat(durationBuffer, &c, 1);
 ;PCODE: $00000224 VOL: 0
 ;PCODE: $00000225 VOL: 0
 ;PCODE: $00000226 VOL: 0
 ;PCODE: $00000227 VOL: 0
 ;PCODE: $00000228 VOL: 0
+; 0000 0124     }
 ;PCODE: $00000229 VOL: 0
-; 0000 0114     }
 ;PCODE: $0000022A VOL: 0
+; 0000 0125     // Remove newline character from fgets
+; 0000 0126     timeBuffer[strcspn(timeBuffer, "\n")] = 0;
 ;PCODE: $0000022B VOL: 0
-; 0000 0115     sscanf(durationBuffer, "%d:%d", &shutdownTime.minutes, &shutdownTime.seconds);
 ;PCODE: $0000022C VOL: 0
 ;PCODE: $0000022D VOL: 0
 ;PCODE: $0000022E VOL: 0
@@ -898,6 +911,8 @@ _0x3A:
 ;PCODE: $00000230 VOL: 0
 ;PCODE: $00000231 VOL: 0
 ;PCODE: $00000232 VOL: 0
+; 0000 0127 
+; 0000 0128     sscanf(timeBuffer, "%d:%d:%d", &currentTime.hours, &currentTime.minutes, &currentTime.seconds);
 ;PCODE: $00000233 VOL: 0
 ;PCODE: $00000234 VOL: 0
 ;PCODE: $00000235 VOL: 0
@@ -908,9 +923,6 @@ _0x3A:
 ;PCODE: $0000023A VOL: 0
 ;PCODE: $0000023B VOL: 0
 ;PCODE: $0000023C VOL: 0
-; 0000 0116 
-; 0000 0117     // Start a countdown
-; 0000 0118     while (shutdownTime.minutes != 0 || shutdownTime.seconds != 0)
 ;PCODE: $0000023D VOL: 0
 ;PCODE: $0000023E VOL: 0
 ;PCODE: $0000023F VOL: 0
@@ -921,10 +933,10 @@ _0x3A:
 ;PCODE: $00000244 VOL: 0
 ;PCODE: $00000245 VOL: 0
 ;PCODE: $00000246 VOL: 0
+; 0000 0129 
+; 0000 012A     // Display the time on LCD
+; 0000 012B     sprintf(lcdBuffer, "Time: %02d:%02d:%02d", currentTime.hours, currentTime.minutes, currentTime.seconds);
 ;PCODE: $00000247 VOL: 0
-; 0000 0119     {
-; 0000 011A         // Decrement the time
-; 0000 011B         if (--shutdownTime.seconds < 0)
 ;PCODE: $00000248 VOL: 0
 ;PCODE: $00000249 VOL: 0
 ;PCODE: $0000024A VOL: 0
@@ -932,64 +944,69 @@ _0x3A:
 ;PCODE: $0000024C VOL: 0
 ;PCODE: $0000024D VOL: 0
 ;PCODE: $0000024E VOL: 0
-; 0000 011C         {
-; 0000 011D             shutdownTime.seconds = 59;
 ;PCODE: $0000024F VOL: 0
 ;PCODE: $00000250 VOL: 0
 ;PCODE: $00000251 VOL: 0
-; 0000 011E             shutdownTime.minutes--;
 ;PCODE: $00000252 VOL: 0
 ;PCODE: $00000253 VOL: 0
 ;PCODE: $00000254 VOL: 0
 ;PCODE: $00000255 VOL: 0
 ;PCODE: $00000256 VOL: 0
-; 0000 011F         }
-; 0000 0120 
-; 0000 0121         // Display the remaining time on LCD
-; 0000 0122         sprintf(lcdBuffer, "Shutdown in %02d:%02d", shutdownTime.minutes, shutdownTime.seconds);
 ;PCODE: $00000257 VOL: 0
 ;PCODE: $00000258 VOL: 0
 ;PCODE: $00000259 VOL: 0
 ;PCODE: $0000025A VOL: 0
+; 0000 012C     lcd_gotoxy(0, 1);
 ;PCODE: $0000025B VOL: 0
 ;PCODE: $0000025C VOL: 0
 ;PCODE: $0000025D VOL: 0
 ;PCODE: $0000025E VOL: 0
+; 0000 012D     lcd_puts(lcdBuffer);
 ;PCODE: $0000025F VOL: 0
 ;PCODE: $00000260 VOL: 0
+; 0000 012E }
 ;PCODE: $00000261 VOL: 0
 ;PCODE: $00000262 VOL: 0
+
+	.DSEG
+_0x43:
+	.BYTE 0x1B
+;
+;void auto_shutdown()
+; 0000 0131 {
+
+	.CSEG
 ;PCODE: $00000263 VOL: 0
 ;PCODE: $00000264 VOL: 0
+; 0000 0132     // Ask the user to input shutdown duration
+; 0000 0133     send_string("\nEnter shutdown duration (MM:SS): ");
 ;PCODE: $00000265 VOL: 0
 ;PCODE: $00000266 VOL: 0
 ;PCODE: $00000267 VOL: 0
+; 0000 0134     while (c = UDR0, c != '\n') // read until newline
 ;PCODE: $00000268 VOL: 0
-; 0000 0123         lcd_gotoxy(0, 1);
 ;PCODE: $00000269 VOL: 0
 ;PCODE: $0000026A VOL: 0
 ;PCODE: $0000026B VOL: 0
 ;PCODE: $0000026C VOL: 0
-; 0000 0124         lcd_puts(lcdBuffer);
 ;PCODE: $0000026D VOL: 0
+; 0000 0135     {
+; 0000 0136         strncat(durationBuffer, &c, 1);
 ;PCODE: $0000026E VOL: 0
-; 0000 0125 
-; 0000 0126         // Beep the buzzer when there is 1 minute left
-; 0000 0127         if (shutdownTime.minutes == 1 && shutdownTime.seconds == 0)
 ;PCODE: $0000026F VOL: 0
 ;PCODE: $00000270 VOL: 0
 ;PCODE: $00000271 VOL: 0
 ;PCODE: $00000272 VOL: 0
 ;PCODE: $00000273 VOL: 0
+; 0000 0137     }
 ;PCODE: $00000274 VOL: 0
 ;PCODE: $00000275 VOL: 0
+; 0000 0138     sscanf(durationBuffer, "%d:%d", &shutdownTime.minutes, &shutdownTime.seconds);
 ;PCODE: $00000276 VOL: 0
 ;PCODE: $00000277 VOL: 0
 ;PCODE: $00000278 VOL: 0
 ;PCODE: $00000279 VOL: 0
 ;PCODE: $0000027A VOL: 0
-; 0000 0128         {
-; 0000 0129             PORTD |= (1 << BUZZER);
 ;PCODE: $0000027B VOL: 0
 ;PCODE: $0000027C VOL: 0
 ;PCODE: $0000027D VOL: 0
@@ -998,14 +1015,13 @@ _0x3A:
 ;PCODE: $00000280 VOL: 0
 ;PCODE: $00000281 VOL: 0
 ;PCODE: $00000282 VOL: 0
-; 0000 012A         }
-; 0000 012B 
-; 0000 012C         // Delay for a second
-; 0000 012D         for(i = 0; i < 1000; i++)
 ;PCODE: $00000283 VOL: 0
 ;PCODE: $00000284 VOL: 0
 ;PCODE: $00000285 VOL: 0
 ;PCODE: $00000286 VOL: 0
+; 0000 0139 
+; 0000 013A     // Start a countdown
+; 0000 013B     while (shutdownTime.minutes != 0 || shutdownTime.seconds != 0)
 ;PCODE: $00000287 VOL: 0
 ;PCODE: $00000288 VOL: 0
 ;PCODE: $00000289 VOL: 0
@@ -1014,10 +1030,12 @@ _0x3A:
 ;PCODE: $0000028C VOL: 0
 ;PCODE: $0000028D VOL: 0
 ;PCODE: $0000028E VOL: 0
-; 0000 012E             delay_ms(1); // Using delay_ms() in a loop
 ;PCODE: $0000028F VOL: 0
 ;PCODE: $00000290 VOL: 0
 ;PCODE: $00000291 VOL: 0
+; 0000 013C     {
+; 0000 013D         // Decrement the time
+; 0000 013E         if (--shutdownTime.seconds < 0)
 ;PCODE: $00000292 VOL: 0
 ;PCODE: $00000293 VOL: 0
 ;PCODE: $00000294 VOL: 0
@@ -1025,22 +1043,24 @@ _0x3A:
 ;PCODE: $00000296 VOL: 0
 ;PCODE: $00000297 VOL: 0
 ;PCODE: $00000298 VOL: 0
-; 0000 012F }
+; 0000 013F         {
+; 0000 0140             shutdownTime.seconds = 59;
 ;PCODE: $00000299 VOL: 0
 ;PCODE: $0000029A VOL: 0
-; 0000 0130 
-; 0000 0131     // Shutdown the system
-; 0000 0132     PORTD &= ~(1 << LED1);
 ;PCODE: $0000029B VOL: 0
+; 0000 0141             shutdownTime.minutes--;
 ;PCODE: $0000029C VOL: 0
 ;PCODE: $0000029D VOL: 0
 ;PCODE: $0000029E VOL: 0
 ;PCODE: $0000029F VOL: 0
 ;PCODE: $000002A0 VOL: 0
+; 0000 0142         }
+; 0000 0143 
+; 0000 0144         // Display the remaining time on LCD
+; 0000 0145         sprintf(lcdBuffer, "Shutdown in %02d:%02d", shutdownTime.minutes, shutdownTime.seconds);
 ;PCODE: $000002A1 VOL: 0
 ;PCODE: $000002A2 VOL: 0
 ;PCODE: $000002A3 VOL: 0
-; 0000 0133     PORTD &= ~(1 << LED2);
 ;PCODE: $000002A4 VOL: 0
 ;PCODE: $000002A5 VOL: 0
 ;PCODE: $000002A6 VOL: 0
@@ -1050,142 +1070,99 @@ _0x3A:
 ;PCODE: $000002AA VOL: 0
 ;PCODE: $000002AB VOL: 0
 ;PCODE: $000002AC VOL: 0
-; 0000 0134     PORTD &= ~(1 << BUZZER);
 ;PCODE: $000002AD VOL: 0
 ;PCODE: $000002AE VOL: 0
 ;PCODE: $000002AF VOL: 0
 ;PCODE: $000002B0 VOL: 0
 ;PCODE: $000002B1 VOL: 0
 ;PCODE: $000002B2 VOL: 0
+; 0000 0146         lcd_gotoxy(0, 1);
 ;PCODE: $000002B3 VOL: 0
 ;PCODE: $000002B4 VOL: 0
 ;PCODE: $000002B5 VOL: 0
-; 0000 0135     lcd_clear();
 ;PCODE: $000002B6 VOL: 0
-; 0000 0136     PORTA = 0; // Turn off 7-segment
+; 0000 0147         lcd_puts(lcdBuffer);
 ;PCODE: $000002B7 VOL: 0
 ;PCODE: $000002B8 VOL: 0
-; 0000 0137 }
+; 0000 0148 
+; 0000 0149         // Beep the buzzer when there is 1 minute left
+; 0000 014A         if (shutdownTime.minutes == 1 && shutdownTime.seconds == 0)
 ;PCODE: $000002B9 VOL: 0
 ;PCODE: $000002BA VOL: 0
-
-	.DSEG
-_0x3E:
-	.BYTE 0x23
-;
-;void main(void)
-; 0000 013A {
-
-	.CSEG
 ;PCODE: $000002BB VOL: 0
-; 0000 013B     // Port D is output for LEDs
-; 0000 013C     DDRD.0 = 1;
 ;PCODE: $000002BC VOL: 0
 ;PCODE: $000002BD VOL: 0
-; 0000 013D     DDRD.1 = 1;
 ;PCODE: $000002BE VOL: 0
 ;PCODE: $000002BF VOL: 0
-; 0000 013E 
-; 0000 013F     // Turn on the LED1
-; 0000 0140     LED1 = 1;
 ;PCODE: $000002C0 VOL: 0
 ;PCODE: $000002C1 VOL: 0
-; 0000 0141 
-; 0000 0142     // Initialize USART
-; 0000 0143     UCSR0A = 0x00;
 ;PCODE: $000002C2 VOL: 0
 ;PCODE: $000002C3 VOL: 0
-; 0000 0144     UCSR0B = 0x18;
 ;PCODE: $000002C4 VOL: 0
+; 0000 014B         {
+; 0000 014C             PORTD |= (1 << BUZZER);
 ;PCODE: $000002C5 VOL: 0
-; 0000 0145     UCSR0C = 0x06;
 ;PCODE: $000002C6 VOL: 0
 ;PCODE: $000002C7 VOL: 0
-; 0000 0146     UBRR0L = 51; // for 9600 bps with 8MHz clock
 ;PCODE: $000002C8 VOL: 0
 ;PCODE: $000002C9 VOL: 0
-; 0000 0147 
-; 0000 0148     // Enable Global Interrupts
-; 0000 0149     #asm("sei")
 ;PCODE: $000002CA VOL: 0
-	sei
 ;PCODE: $000002CB VOL: 0
-; 0000 014A 
-; 0000 014B     send_string("Enter Username: ");
 ;PCODE: $000002CC VOL: 0
+; 0000 014D         }
+; 0000 014E 
+; 0000 014F         // Delay for a second
+; 0000 0150         for(i = 0; i < 1000; i++)
 ;PCODE: $000002CD VOL: 0
 ;PCODE: $000002CE VOL: 0
-; 0000 014C 
-; 0000 014D     while (1)
 ;PCODE: $000002CF VOL: 0
-; 0000 014E     {
-; 0000 014F         if (isMenuOpen == 1)
 ;PCODE: $000002D0 VOL: 0
 ;PCODE: $000002D1 VOL: 0
 ;PCODE: $000002D2 VOL: 0
-; 0000 0150         {
-; 0000 0151             // Display the menu on LCD
-; 0000 0152             lcd_gotoxy(0, 0);
 ;PCODE: $000002D3 VOL: 0
 ;PCODE: $000002D4 VOL: 0
 ;PCODE: $000002D5 VOL: 0
 ;PCODE: $000002D6 VOL: 0
-; 0000 0153             lcd_putsf("Menu: ");
 ;PCODE: $000002D7 VOL: 0
 ;PCODE: $000002D8 VOL: 0
+; 0000 0151             delay_ms(1); // Using delay_ms() in a loop
 ;PCODE: $000002D9 VOL: 0
-; 0000 0154             lcd_gotoxy(0, 1);
 ;PCODE: $000002DA VOL: 0
 ;PCODE: $000002DB VOL: 0
 ;PCODE: $000002DC VOL: 0
 ;PCODE: $000002DD VOL: 0
-; 0000 0155             lcd_puts(menuOptions[menuSelection]);
 ;PCODE: $000002DE VOL: 0
 ;PCODE: $000002DF VOL: 0
 ;PCODE: $000002E0 VOL: 0
 ;PCODE: $000002E1 VOL: 0
 ;PCODE: $000002E2 VOL: 0
+; 0000 0152 }
 ;PCODE: $000002E3 VOL: 0
 ;PCODE: $000002E4 VOL: 0
-; 0000 0156 
-; 0000 0157             // Display selection on 7-segment
-; 0000 0158             PORTA = menuSelection + 1;
+; 0000 0153 
+; 0000 0154     // Shutdown the system
+; 0000 0155     PORTD &= ~(1 << LED1);
 ;PCODE: $000002E5 VOL: 0
 ;PCODE: $000002E6 VOL: 0
 ;PCODE: $000002E7 VOL: 0
-; 0000 0159 
-; 0000 015A             // Implement switch case for menu selections
-; 0000 015B             switch (menuSelection)
 ;PCODE: $000002E8 VOL: 0
-; 0000 015C             {
-; 0000 015D                 case 0:
 ;PCODE: $000002E9 VOL: 0
 ;PCODE: $000002EA VOL: 0
-; 0000 015E                     measure_voltage();
 ;PCODE: $000002EB VOL: 0
-; 0000 015F                     break;
 ;PCODE: $000002EC VOL: 0
-; 0000 0160                 case 1:
 ;PCODE: $000002ED VOL: 0
+; 0000 0156     PORTD &= ~(1 << LED2);
 ;PCODE: $000002EE VOL: 0
 ;PCODE: $000002EF VOL: 0
-; 0000 0161                     set_clock();
 ;PCODE: $000002F0 VOL: 0
-; 0000 0162                     break;
 ;PCODE: $000002F1 VOL: 0
-; 0000 0163                 case 2:
 ;PCODE: $000002F2 VOL: 0
 ;PCODE: $000002F3 VOL: 0
 ;PCODE: $000002F4 VOL: 0
-; 0000 0164                     auto_shutdown();
 ;PCODE: $000002F5 VOL: 0
-; 0000 0165                     break;
 ;PCODE: $000002F6 VOL: 0
-; 0000 0166             }
+; 0000 0157     PORTD &= ~(1 << BUZZER);
 ;PCODE: $000002F7 VOL: 0
-; 0000 0167         }
-; 0000 0168 
-; 0000 0169         if (PIND & (1 << KEY_PORT))
 ;PCODE: $000002F8 VOL: 0
 ;PCODE: $000002F9 VOL: 0
 ;PCODE: $000002FA VOL: 0
@@ -1194,56 +1171,274 @@ _0x3E:
 ;PCODE: $000002FD VOL: 0
 ;PCODE: $000002FE VOL: 0
 ;PCODE: $000002FF VOL: 0
+; 0000 0158     lcd_clear();
 ;PCODE: $00000300 VOL: 0
+; 0000 0159     PORTA = 0; // Turn off 7-segment
 ;PCODE: $00000301 VOL: 0
 ;PCODE: $00000302 VOL: 0
+; 0000 015A }
 ;PCODE: $00000303 VOL: 0
-; 0000 016A         {
-; 0000 016B             // Menu button is pressed
-; 0000 016C             if (isMenuOpen == 0)
 ;PCODE: $00000304 VOL: 0
-;PCODE: $00000305 VOL: 0
-;PCODE: $00000306 VOL: 0
-; 0000 016D             {
-; 0000 016E                 // Open the menu
-; 0000 016F                 isMenuOpen = 1;
-;PCODE: $00000307 VOL: 0
-;PCODE: $00000308 VOL: 0
-; 0000 0170                 menuSelection = 0; // Reset the menu selection
-;PCODE: $00000309 VOL: 0
-;PCODE: $0000030A VOL: 0
-; 0000 0171             }
-; 0000 0172             else
-;PCODE: $0000030B VOL: 0
-;PCODE: $0000030C VOL: 0
-; 0000 0173             {
-; 0000 0174                 // Select the current menu item
-; 0000 0175                 menuSelection = (menuSelection + 1) % numMenuOptions;
-;PCODE: $0000030D VOL: 0
-;PCODE: $0000030E VOL: 0
-;PCODE: $0000030F VOL: 0
-;PCODE: $00000310 VOL: 0
-;PCODE: $00000311 VOL: 0
-; 0000 0176 
-; 0000 0177                 // Close the menu
-; 0000 0178                 isMenuOpen = 0;
-;PCODE: $00000312 VOL: 0
-;PCODE: $00000313 VOL: 0
-; 0000 0179                 PORTA = 0; // Turn off 7-segment
-;PCODE: $00000314 VOL: 0
-;PCODE: $00000315 VOL: 0
-; 0000 017A             }
-;PCODE: $00000316 VOL: 0
-; 0000 017B         }
-; 0000 017C     }
-;PCODE: $00000317 VOL: 0
-;PCODE: $00000318 VOL: 0
-;PCODE: $00000319 VOL: 0
-; 0000 017D }
-;PCODE: $0000031A VOL: 0
-;PCODE: $0000031B VOL: 0
-;PCODE: $0000031C VOL: 0
 
 	.DSEG
-_0x54:
-	.BYTE 0x11
+_0x47:
+	.BYTE 0x23
+;
+;void main(void)
+; 0000 015D {
+
+	.CSEG
+;PCODE: $00000305 VOL: 0
+; 0000 015E     // Port D is output for LEDs
+; 0000 015F     DDRD.0 = 1;
+;PCODE: $00000306 VOL: 0
+;PCODE: $00000307 VOL: 0
+; 0000 0160     DDRD.1 = 1;
+;PCODE: $00000308 VOL: 0
+;PCODE: $00000309 VOL: 0
+; 0000 0161 
+; 0000 0162     // Turn on the LED1
+; 0000 0163     LED1 = 1;
+;PCODE: $0000030A VOL: 0
+;PCODE: $0000030B VOL: 0
+; 0000 0164 
+; 0000 0165     // Initialize USART
+; 0000 0166     UCSR0A = 0x00;
+;PCODE: $0000030C VOL: 0
+;PCODE: $0000030D VOL: 0
+; 0000 0167     UCSR0B = 0x18;
+;PCODE: $0000030E VOL: 0
+;PCODE: $0000030F VOL: 0
+; 0000 0168     UCSR0C = 0x06;
+;PCODE: $00000310 VOL: 0
+;PCODE: $00000311 VOL: 0
+; 0000 0169     UBRR0L = 51; // for 9600 bps with 8MHz clock
+;PCODE: $00000312 VOL: 0
+;PCODE: $00000313 VOL: 0
+; 0000 016A 
+; 0000 016B     // Enable Global Interrupts
+; 0000 016C     #asm("sei")
+;PCODE: $00000314 VOL: 0
+	sei
+;PCODE: $00000315 VOL: 0
+; 0000 016D 
+; 0000 016E     send_string("Enter Username: ");
+;PCODE: $00000316 VOL: 0
+;PCODE: $00000317 VOL: 0
+;PCODE: $00000318 VOL: 0
+; 0000 016F 
+; 0000 0170     while (1)
+;PCODE: $00000319 VOL: 0
+; 0000 0171     {
+; 0000 0172     key = read_keypad();
+;PCODE: $0000031A VOL: 0
+;PCODE: $0000031B VOL: 0
+; 0000 0173         if (key != '\0')
+;PCODE: $0000031C VOL: 0
+;PCODE: $0000031D VOL: 0
+;PCODE: $0000031E VOL: 0
+; 0000 0174         {
+; 0000 0175             if (isMenuOpen)
+;PCODE: $0000031F VOL: 0
+;PCODE: $00000320 VOL: 0
+;PCODE: $00000321 VOL: 0
+; 0000 0176             {
+; 0000 0177                 menuOptionSelected = key - '0';
+;PCODE: $00000322 VOL: 0
+;PCODE: $00000323 VOL: 0
+;PCODE: $00000324 VOL: 0
+;PCODE: $00000325 VOL: 0
+; 0000 0178                 switch(menuOptionSelected)
+;PCODE: $00000326 VOL: 0
+; 0000 0179                 {
+; 0000 017A                     case 1:
+;PCODE: $00000327 VOL: 0
+;PCODE: $00000328 VOL: 0
+; 0000 017B                         measure_voltage();
+;PCODE: $00000329 VOL: 0
+; 0000 017C                         break;
+;PCODE: $0000032A VOL: 0
+; 0000 017D                     case 2:
+;PCODE: $0000032B VOL: 0
+;PCODE: $0000032C VOL: 0
+;PCODE: $0000032D VOL: 0
+; 0000 017E                         set_clock();
+;PCODE: $0000032E VOL: 0
+; 0000 017F                         break;
+;PCODE: $0000032F VOL: 0
+; 0000 0180                     case 3:
+;PCODE: $00000330 VOL: 0
+;PCODE: $00000331 VOL: 0
+;PCODE: $00000332 VOL: 0
+; 0000 0181                         auto_shutdown();
+;PCODE: $00000333 VOL: 0
+; 0000 0182                         break;
+;PCODE: $00000334 VOL: 0
+; 0000 0183                     default:
+;PCODE: $00000335 VOL: 0
+; 0000 0184                         lcd_puts("Invalid Option");
+;PCODE: $00000336 VOL: 0
+;PCODE: $00000337 VOL: 0
+;PCODE: $00000338 VOL: 0
+; 0000 0185                         break;
+;PCODE: $00000339 VOL: 0
+; 0000 0186                 }
+;PCODE: $0000033A VOL: 0
+; 0000 0187                 isMenuOpen = 0;
+;PCODE: $0000033B VOL: 0
+;PCODE: $0000033C VOL: 0
+; 0000 0188             }
+; 0000 0189             else if (key == '*')  // Open the menu when * key is pressed
+;PCODE: $0000033D VOL: 0
+;PCODE: $0000033E VOL: 0
+;PCODE: $0000033F VOL: 0
+;PCODE: $00000340 VOL: 0
+;PCODE: $00000341 VOL: 0
+; 0000 018A             {
+; 0000 018B                 lcd_clear();
+;PCODE: $00000342 VOL: 0
+; 0000 018C                 lcd_gotoxy(0,0);
+;PCODE: $00000343 VOL: 0
+;PCODE: $00000344 VOL: 0
+;PCODE: $00000345 VOL: 0
+;PCODE: $00000346 VOL: 0
+; 0000 018D                 lcd_puts("1.Volt 2.Clock 3.Shut");
+;PCODE: $00000347 VOL: 0
+;PCODE: $00000348 VOL: 0
+;PCODE: $00000349 VOL: 0
+; 0000 018E                 isMenuOpen = 1;
+;PCODE: $0000034A VOL: 0
+;PCODE: $0000034B VOL: 0
+; 0000 018F             }
+; 0000 0190         }
+;PCODE: $0000034C VOL: 0
+;PCODE: $0000034D VOL: 0
+; 0000 0191         if (isMenuOpen == 1)
+;PCODE: $0000034E VOL: 0
+;PCODE: $0000034F VOL: 0
+;PCODE: $00000350 VOL: 0
+;PCODE: $00000351 VOL: 0
+; 0000 0192         {
+; 0000 0193             // Display the menu on LCD
+; 0000 0194             lcd_gotoxy(0, 0);
+;PCODE: $00000352 VOL: 0
+;PCODE: $00000353 VOL: 0
+;PCODE: $00000354 VOL: 0
+;PCODE: $00000355 VOL: 0
+; 0000 0195             lcd_putsf("Menu: ");
+;PCODE: $00000356 VOL: 0
+;PCODE: $00000357 VOL: 0
+;PCODE: $00000358 VOL: 0
+; 0000 0196             lcd_gotoxy(0, 1);
+;PCODE: $00000359 VOL: 0
+;PCODE: $0000035A VOL: 0
+;PCODE: $0000035B VOL: 0
+;PCODE: $0000035C VOL: 0
+; 0000 0197             lcd_puts(menuOptions[menuSelection]);
+;PCODE: $0000035D VOL: 0
+;PCODE: $0000035E VOL: 0
+;PCODE: $0000035F VOL: 0
+;PCODE: $00000360 VOL: 0
+;PCODE: $00000361 VOL: 0
+;PCODE: $00000362 VOL: 0
+;PCODE: $00000363 VOL: 0
+; 0000 0198 
+; 0000 0199             // Display selection on 7-segment
+; 0000 019A             PORTA = menuSelection + 1;
+;PCODE: $00000364 VOL: 0
+;PCODE: $00000365 VOL: 0
+;PCODE: $00000366 VOL: 0
+; 0000 019B 
+; 0000 019C             // Implement switch case for menu selections
+; 0000 019D             switch (menuSelection)
+;PCODE: $00000367 VOL: 0
+; 0000 019E             {
+; 0000 019F                 case 0:
+;PCODE: $00000368 VOL: 0
+;PCODE: $00000369 VOL: 0
+; 0000 01A0                     measure_voltage();
+;PCODE: $0000036A VOL: 0
+; 0000 01A1                     break;
+;PCODE: $0000036B VOL: 0
+; 0000 01A2                 case 1:
+;PCODE: $0000036C VOL: 0
+;PCODE: $0000036D VOL: 0
+;PCODE: $0000036E VOL: 0
+; 0000 01A3                     set_clock();
+;PCODE: $0000036F VOL: 0
+; 0000 01A4                     break;
+;PCODE: $00000370 VOL: 0
+; 0000 01A5                 case 2:
+;PCODE: $00000371 VOL: 0
+;PCODE: $00000372 VOL: 0
+;PCODE: $00000373 VOL: 0
+; 0000 01A6                     auto_shutdown();
+;PCODE: $00000374 VOL: 0
+; 0000 01A7                     break;
+;PCODE: $00000375 VOL: 0
+; 0000 01A8             }
+;PCODE: $00000376 VOL: 0
+; 0000 01A9         }
+; 0000 01AA 
+; 0000 01AB         if (PIND & (1 << KEY_PORT))
+;PCODE: $00000377 VOL: 0
+;PCODE: $00000378 VOL: 0
+;PCODE: $00000379 VOL: 0
+;PCODE: $0000037A VOL: 0
+;PCODE: $0000037B VOL: 0
+;PCODE: $0000037C VOL: 0
+;PCODE: $0000037D VOL: 0
+;PCODE: $0000037E VOL: 0
+;PCODE: $0000037F VOL: 0
+;PCODE: $00000380 VOL: 0
+;PCODE: $00000381 VOL: 0
+;PCODE: $00000382 VOL: 0
+; 0000 01AC         {
+; 0000 01AD             // Menu button is pressed
+; 0000 01AE             if (isMenuOpen == 0)
+;PCODE: $00000383 VOL: 0
+;PCODE: $00000384 VOL: 0
+;PCODE: $00000385 VOL: 0
+; 0000 01AF             {
+; 0000 01B0                 // Open the menu
+; 0000 01B1                 isMenuOpen = 1;
+;PCODE: $00000386 VOL: 0
+;PCODE: $00000387 VOL: 0
+; 0000 01B2                 menuSelection = 0; // Reset the menu selection
+;PCODE: $00000388 VOL: 0
+;PCODE: $00000389 VOL: 0
+; 0000 01B3             }
+; 0000 01B4             else
+;PCODE: $0000038A VOL: 0
+;PCODE: $0000038B VOL: 0
+; 0000 01B5             {
+; 0000 01B6                 // Select the current menu item
+; 0000 01B7                 menuSelection = (menuSelection + 1) % numMenuOptions;
+;PCODE: $0000038C VOL: 0
+;PCODE: $0000038D VOL: 0
+;PCODE: $0000038E VOL: 0
+;PCODE: $0000038F VOL: 0
+;PCODE: $00000390 VOL: 0
+; 0000 01B8 
+; 0000 01B9                 // Close the menu
+; 0000 01BA                 isMenuOpen = 0;
+;PCODE: $00000391 VOL: 0
+;PCODE: $00000392 VOL: 0
+; 0000 01BB                 PORTA = 0; // Turn off 7-segment
+;PCODE: $00000393 VOL: 0
+;PCODE: $00000394 VOL: 0
+; 0000 01BC             }
+;PCODE: $00000395 VOL: 0
+; 0000 01BD         }
+; 0000 01BE     }
+;PCODE: $00000396 VOL: 0
+;PCODE: $00000397 VOL: 0
+;PCODE: $00000398 VOL: 0
+; 0000 01BF }
+;PCODE: $00000399 VOL: 0
+;PCODE: $0000039A VOL: 0
+;PCODE: $0000039B VOL: 0
+
+	.DSEG
+_0x5D:
+	.BYTE 0x36

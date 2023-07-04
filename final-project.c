@@ -57,11 +57,46 @@ char timeBuffer[10];
 char c; //read until new line for clock
 // Display the time on LCD
 char lcdBuffer[20];
-// Display the remaining time on LCD
-char lcdBuffer[20];
 //Diration for shutdown
 char durationBuffer[10];
 int i = 0; //counter for for :)
+
+char key;
+int menuOptionSelected = 0;
+
+// Define the keypad layout
+char keypad[4][4] = { {'1','2','3','A'}, 
+                      {'4','5','6','B'}, 
+                      {'7','8','9','C'}, 
+                      {'*','0','#','D'} };
+
+// Read the keypad
+char read_keypad(void)
+{
+    int row, col;
+    for (row = 0; row < 4; row++)
+    {
+        // Scan one row at a time
+        PORTD = 0b00010000 << row;
+
+        // Check each column
+        for (col = 0; col < 4; col++)
+        {
+            if (!(PIND & (0b0001 << col)))
+            {
+                // Debounce the key press
+                delay_ms(20);
+                if (!(PIND & (0b0001 << col)))
+                {
+                    // Return the key value
+                    return keypad[row][col];
+                }
+            }
+        }
+    }
+    // If no key is pressed
+    return '\0';
+}
 
 void send_string(char *str)
 {
@@ -332,6 +367,37 @@ void main(void)
 
     while (1)
     {
+    key = read_keypad();
+        if (key != '\0')
+        {
+            if (isMenuOpen)
+            {
+                menuOptionSelected = key - '0';
+                switch(menuOptionSelected)
+                {
+                    case 1: 
+                        measure_voltage();
+                        break;
+                    case 2: 
+                        set_clock();
+                        break;
+                    case 3: 
+                        auto_shutdown();
+                        break;
+                    default: 
+                        lcd_puts("Invalid Option");
+                        break;
+                }
+                isMenuOpen = 0;
+            }
+            else if (key == '*')  // Open the menu when * key is pressed
+            {
+                lcd_clear();
+                lcd_gotoxy(0,0);
+                lcd_puts("1.Volt 2.Clock 3.Shut");
+                isMenuOpen = 1;
+            }
+        }
         if (isMenuOpen == 1)
         {
             // Display the menu on LCD
