@@ -1175,6 +1175,11 @@ _0x5:
 	.DB  LOW(_0x4),HIGH(_0x4),LOW(_0x4+20),HIGH(_0x4+20),LOW(_0x4+38),HIGH(_0x4+38)
 _0x6:
 	.DB  0x3
+_0x33:
+	.DB  0x3F,0x6,0x5B,0x4F,0x66,0x6D,0x7D,0x7
+	.DB  0x7F,0x6F
+_0x35:
+	.DB  0x0,0x0,0x80,0xBF
 _0x0:
 	.DB  0x56,0x6F,0x6C,0x74,0x61,0x67,0x65,0x20
 	.DB  0x6D,0x65,0x61,0x73,0x75,0x72,0x65,0x6D
@@ -1200,10 +1205,26 @@ _0x0:
 	.DB  0x66,0x75,0x6C,0x21,0xA,0x0,0xA,0x52
 	.DB  0x65,0x67,0x69,0x73,0x74,0x72,0x61,0x74
 	.DB  0x69,0x6F,0x6E,0x20,0x46,0x61,0x69,0x6C
-	.DB  0x65,0x64,0x21,0xA,0x0,0x45,0x6E,0x74
-	.DB  0x65,0x72,0x20,0x55,0x73,0x65,0x72,0x6E
-	.DB  0x61,0x6D,0x65,0x3A,0x20,0x0,0x4D,0x65
-	.DB  0x6E,0x75,0x3A,0x20,0x0
+	.DB  0x65,0x64,0x21,0xA,0x0,0x56,0x6F,0x6C
+	.DB  0x74,0x61,0x67,0x65,0x3A,0x20,0x25,0x2E
+	.DB  0x32,0x66,0x56,0x0,0xA,0x45,0x6E,0x74
+	.DB  0x65,0x72,0x20,0x74,0x69,0x6D,0x65,0x20
+	.DB  0x28,0x48,0x48,0x3A,0x4D,0x4D,0x3A,0x53
+	.DB  0x53,0x29,0x3A,0x20,0x0,0x25,0x64,0x3A
+	.DB  0x25,0x64,0x3A,0x25,0x64,0x0,0x54,0x69
+	.DB  0x6D,0x65,0x3A,0x20,0x25,0x30,0x32,0x64
+	.DB  0x3A,0x25,0x30,0x32,0x64,0x3A,0x25,0x30
+	.DB  0x32,0x64,0x0,0xA,0x45,0x6E,0x74,0x65
+	.DB  0x72,0x20,0x73,0x68,0x75,0x74,0x64,0x6F
+	.DB  0x77,0x6E,0x20,0x64,0x75,0x72,0x61,0x74
+	.DB  0x69,0x6F,0x6E,0x20,0x28,0x4D,0x4D,0x3A
+	.DB  0x53,0x53,0x29,0x3A,0x20,0x0,0x53,0x68
+	.DB  0x75,0x74,0x64,0x6F,0x77,0x6E,0x20,0x69
+	.DB  0x6E,0x20,0x25,0x30,0x32,0x64,0x3A,0x25
+	.DB  0x30,0x32,0x64,0x0,0x45,0x6E,0x74,0x65
+	.DB  0x72,0x20,0x55,0x73,0x65,0x72,0x6E,0x61
+	.DB  0x6D,0x65,0x3A,0x20,0x0,0x4D,0x65,0x6E
+	.DB  0x75,0x3A,0x20,0x0
 _0x2020060:
 	.DB  0x1
 _0x2020000:
@@ -1273,9 +1294,21 @@ __GLOBAL_INI_TBL:
 	.DW  _0x29+27
 	.DW  _0x0*2+174
 
+	.DW  0x19
+	.DW  _0x3A
+	.DW  _0x0*2+212
+
+	.DW  0x02
+	.DW  _0x3A+25
+	.DW  _0x0*2+109
+
+	.DW  0x23
+	.DW  _0x3E
+	.DW  _0x0*2+267
+
 	.DW  0x11
-	.DW  _0x39
-	.DW  _0x0*2+197
+	.DW  _0x54
+	.DW  _0x0*2+324
 
 	.DW  0x01
 	.DW  __seed_G101
@@ -1431,14 +1464,25 @@ _0x4:
 ;// Menu state
 ;int isMenuOpen = 0;
 ;int menuSelection = 0;
+;float voltage;
+;char voltageStr[20];
+;char timeBuffer[10];
+;char c; //read until new line for clock
+;// Display the time on LCD
+;char lcdBuffer[20];
+;// Display the remaining time on LCD
+;char lcdBuffer[20];
+;//Diration for shutdown
+;char durationBuffer[10];
+;int i = 0; //counter for for :)
 ;
 ;void send_string(char *str)
-; 0000 0038 {
+; 0000 0043 {
 
 	.CSEG
 _send_string:
 ; .FSTART _send_string
-; 0000 0039     while (*str != 0)
+; 0000 0044     while (*str != 0)
 	ST   -Y,R27
 	ST   -Y,R26
 ;	*str -> Y+0
@@ -1448,35 +1492,35 @@ _0x7:
 	LD   R30,X
 	CPI  R30,0
 	BREQ _0x9
-; 0000 003A     {
-; 0000 003B         while ((UCSR0A & (1 << UDRE0)) == 0);
+; 0000 0045     {
+; 0000 0046         while ((UCSR0A & (1 << UDRE0)) == 0);
 _0xA:
 	SBIS 0xB,5
 	RJMP _0xA
-; 0000 003C         UDR0 = *str;
+; 0000 0047         UDR0 = *str;
 	LD   R26,Y
 	LDD  R27,Y+1
 	LD   R30,X
 	OUT  0xC,R30
-; 0000 003D         str++;
+; 0000 0048         str++;
 	LD   R30,Y
 	LDD  R31,Y+1
 	ADIW R30,1
 	ST   Y,R30
 	STD  Y+1,R31
-; 0000 003E     }
+; 0000 0049     }
 	RJMP _0x7
 _0x9:
-; 0000 003F }
+; 0000 004A }
 	JMP  _0x20C0003
 ; .FEND
 ;
 ;void check_user()
-; 0000 0042 {
+; 0000 004D {
 _check_user:
 ; .FSTART _check_user
-; 0000 0043     int i;
-; 0000 0044     for (i = 0; i < numPredefinedUsers; i++)
+; 0000 004E     int i;
+; 0000 004F     for (i = 0; i < numPredefinedUsers; i++)
 	ST   -Y,R17
 	ST   -Y,R16
 ;	i -> R16,R17
@@ -1484,63 +1528,63 @@ _check_user:
 _0xE:
 	__CPWRR 16,17,6,7
 	BRGE _0xF
-; 0000 0045     {
-; 0000 0046         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
+; 0000 0050     {
+; 0000 0051         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	CALL SUBOPT_0x1
 	BRNE _0x10
-; 0000 0047         {
-; 0000 0048             send_string("\nEnter Password: ");
+; 0000 0052         {
+; 0000 0053             send_string("\nEnter Password: ");
 	__POINTW2MN _0x11,0
 	RCALL _send_string
-; 0000 0049             return;
+; 0000 0054             return;
 	RJMP _0x20C0004
-; 0000 004A         }
-; 0000 004B     }
+; 0000 0055         }
+; 0000 0056     }
 _0x10:
 	__ADDWRN 16,17,1
 	RJMP _0xE
 _0xF:
-; 0000 004C     for (i = 0; i < numRegisteredUsers; i++)
+; 0000 0057     for (i = 0; i < numRegisteredUsers; i++)
 	__GETWRN 16,17,0
 _0x13:
 	__CPWRR 16,17,8,9
 	BRGE _0x14
-; 0000 004D     {
-; 0000 004E         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
+; 0000 0058     {
+; 0000 0059         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	CALL SUBOPT_0x2
 	CALL _strcmp
 	CPI  R30,0
 	BRNE _0x15
-; 0000 004F         {
-; 0000 0050             send_string("\nEnter Password: ");
+; 0000 005A         {
+; 0000 005B             send_string("\nEnter Password: ");
 	__POINTW2MN _0x11,18
 	RCALL _send_string
-; 0000 0051             return;
+; 0000 005C             return;
 	RJMP _0x20C0004
-; 0000 0052         }
-; 0000 0053     }
+; 0000 005D         }
+; 0000 005E     }
 _0x15:
 	__ADDWRN 16,17,1
 	RJMP _0x13
 _0x14:
-; 0000 0054     // If username not found, register new user
-; 0000 0055     isRegistering = 1;
+; 0000 005F     // If username not found, register new user
+; 0000 0060     isRegistering = 1;
 	LDI  R30,LOW(1)
 	LDI  R31,HIGH(1)
 	MOVW R12,R30
-; 0000 0056     strcpy(registeredUsers[numRegisteredUsers].username, inputBuffer);
+; 0000 0061     strcpy(registeredUsers[numRegisteredUsers].username, inputBuffer);
 	MOVW R30,R8
 	LDI  R26,LOW(40)
 	LDI  R27,HIGH(40)
 	CALL __MULW12U
 	CALL SUBOPT_0x2
 	CALL _strcpy
-; 0000 0057     send_string("\nNew Password: ");
+; 0000 0062     send_string("\nNew Password: ");
 	__POINTW2MN _0x11,36
 	RCALL _send_string
-; 0000 0058 }
+; 0000 0063 }
 	RJMP _0x20C0004
 ; .FEND
 
@@ -1549,13 +1593,13 @@ _0x11:
 	.BYTE 0x34
 ;
 ;void check_password()
-; 0000 005B {
+; 0000 0066 {
 
 	.CSEG
 _check_password:
 ; .FSTART _check_password
-; 0000 005C     int i;
-; 0000 005D     for (i = 0; i < numPredefinedUsers; i++)
+; 0000 0067     int i;
+; 0000 0068     for (i = 0; i < numPredefinedUsers; i++)
 	ST   -Y,R17
 	ST   -Y,R16
 ;	i -> R16,R17
@@ -1563,85 +1607,85 @@ _check_password:
 _0x17:
 	__CPWRR 16,17,6,7
 	BRGE _0x18
-; 0000 005E     {
-; 0000 005F         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
+; 0000 0069     {
+; 0000 006A         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	CALL SUBOPT_0x1
 	BRNE _0x19
-; 0000 0060         {
-; 0000 0061             if (strcmp(predefinedUsers[i].password, inputBuffer) == 0)
+; 0000 006B         {
+; 0000 006C             if (strcmp(predefinedUsers[i].password, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	__ADDW1MN _predefinedUsers,20
 	CALL SUBOPT_0x3
 	BRNE _0x1A
-; 0000 0062             {
-; 0000 0063                 strcpy(loggedUser, predefinedUsers[i].username);
+; 0000 006D             {
+; 0000 006E                 strcpy(loggedUser, predefinedUsers[i].username);
 	CALL SUBOPT_0x4
 	SUBI R30,LOW(-_predefinedUsers)
 	SBCI R31,HIGH(-_predefinedUsers)
 	MOVW R26,R30
 	CALL _strcpy
-; 0000 0064                 LED2 = 1; // Turn on the LED2
+; 0000 006F                 LED2 = 1; // Turn on the LED2
 	SBI  0x12,1
-; 0000 0065                 send_string("\nLogin Successful!\n");
+; 0000 0070                 send_string("\nLogin Successful!\n");
 	__POINTW2MN _0x1D,0
 	RCALL _send_string
-; 0000 0066                 return;
+; 0000 0071                 return;
 	RJMP _0x20C0004
-; 0000 0067             }
-; 0000 0068         }
+; 0000 0072             }
+; 0000 0073         }
 _0x1A:
-; 0000 0069     }
+; 0000 0074     }
 _0x19:
 	__ADDWRN 16,17,1
 	RJMP _0x17
 _0x18:
-; 0000 006A     for (i = 0; i < numRegisteredUsers; i++)
+; 0000 0075     for (i = 0; i < numRegisteredUsers; i++)
 	__GETWRN 16,17,0
 _0x1F:
 	__CPWRR 16,17,8,9
 	BRGE _0x20
-; 0000 006B     {
-; 0000 006C         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
+; 0000 0076     {
+; 0000 0077         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	CALL SUBOPT_0x2
 	CALL _strcmp
 	CPI  R30,0
 	BRNE _0x21
-; 0000 006D         {
-; 0000 006E             if (strcmp(registeredUsers[i].password, inputBuffer) == 0)
+; 0000 0078         {
+; 0000 0079             if (strcmp(registeredUsers[i].password, inputBuffer) == 0)
 	CALL SUBOPT_0x0
 	__ADDW1MN _registeredUsers,20
 	CALL SUBOPT_0x3
 	BRNE _0x22
-; 0000 006F             {
-; 0000 0070                 strcpy(loggedUser, registeredUsers[i].username);
+; 0000 007A             {
+; 0000 007B                 strcpy(loggedUser, registeredUsers[i].username);
 	CALL SUBOPT_0x4
 	SUBI R30,LOW(-_registeredUsers)
 	SBCI R31,HIGH(-_registeredUsers)
 	MOVW R26,R30
 	CALL _strcpy
-; 0000 0071                 LED2 = 1; // Turn on the LED2
+; 0000 007C                 LED2 = 1; // Turn on the LED2
 	SBI  0x12,1
-; 0000 0072                 send_string("\nLogin Successful!\n");
+; 0000 007D                 send_string("\nLogin Successful!\n");
 	__POINTW2MN _0x1D,20
 	RCALL _send_string
-; 0000 0073                 return;
+; 0000 007E                 return;
 	RJMP _0x20C0004
-; 0000 0074             }
-; 0000 0075         }
+; 0000 007F             }
+; 0000 0080         }
 _0x22:
-; 0000 0076     }
+; 0000 0081     }
 _0x21:
 	__ADDWRN 16,17,1
 	RJMP _0x1F
 _0x20:
-; 0000 0077     send_string("\nLogin Failed!\n");
+; 0000 0082     send_string("\nLogin Failed!\n");
 	__POINTW2MN _0x1D,40
 	RCALL _send_string
-; 0000 0078     LED2 = 0; // Turn off the LED2
+; 0000 0083     LED2 = 0; // Turn off the LED2
 	CBI  0x12,1
-; 0000 0079 }
+; 0000 0084 }
 _0x20C0004:
 	LD   R16,Y+
 	LD   R17,Y+
@@ -1653,12 +1697,12 @@ _0x1D:
 	.BYTE 0x38
 ;
 ;void check_new_password()
-; 0000 007C {
+; 0000 0087 {
 
 	.CSEG
 _check_new_password:
 ; .FSTART _check_new_password
-; 0000 007D     strcpy(tempPassword, inputBuffer);
+; 0000 0088     strcpy(tempPassword, inputBuffer);
 	LDI  R30,LOW(_tempPassword)
 	LDI  R31,HIGH(_tempPassword)
 	ST   -Y,R31
@@ -1666,10 +1710,10 @@ _check_new_password:
 	LDI  R26,LOW(_inputBuffer)
 	LDI  R27,HIGH(_inputBuffer)
 	CALL _strcpy
-; 0000 007E     send_string("\nConfirm Password: ");
+; 0000 0089     send_string("\nConfirm Password: ");
 	__POINTW2MN _0x27,0
 	RCALL _send_string
-; 0000 007F }
+; 0000 008A }
 	RET
 ; .FEND
 
@@ -1678,18 +1722,18 @@ _0x27:
 	.BYTE 0x14
 ;
 ;void check_confirm_password()
-; 0000 0082 {
+; 0000 008D {
 
 	.CSEG
 _check_confirm_password:
 ; .FSTART _check_confirm_password
-; 0000 0083     if (strcmp(tempPassword, inputBuffer) == 0)
+; 0000 008E     if (strcmp(tempPassword, inputBuffer) == 0)
 	LDI  R30,LOW(_tempPassword)
 	LDI  R31,HIGH(_tempPassword)
 	CALL SUBOPT_0x3
 	BRNE _0x28
-; 0000 0084     {
-; 0000 0085         strcpy(registeredUsers[numRegisteredUsers].password, tempPassword);
+; 0000 008F     {
+; 0000 0090         strcpy(registeredUsers[numRegisteredUsers].password, tempPassword);
 	MOVW R30,R8
 	LDI  R26,LOW(40)
 	LDI  R27,HIGH(40)
@@ -1700,26 +1744,26 @@ _check_confirm_password:
 	LDI  R26,LOW(_tempPassword)
 	LDI  R27,HIGH(_tempPassword)
 	CALL _strcpy
-; 0000 0086         numRegisteredUsers++;
+; 0000 0091         numRegisteredUsers++;
 	MOVW R30,R8
 	ADIW R30,1
 	MOVW R8,R30
-; 0000 0087         send_string("\nRegistration Successful!\n");
+; 0000 0092         send_string("\nRegistration Successful!\n");
 	__POINTW2MN _0x29,0
-	RJMP _0x42
-; 0000 0088     }
-; 0000 0089     else
+	RJMP _0x5D
+; 0000 0093     }
+; 0000 0094     else
 _0x28:
-; 0000 008A     {
-; 0000 008B         send_string("\nRegistration Failed!\n");
+; 0000 0095     {
+; 0000 0096         send_string("\nRegistration Failed!\n");
 	__POINTW2MN _0x29,27
-_0x42:
+_0x5D:
 	RCALL _send_string
-; 0000 008C     }
-; 0000 008D     isRegistering = 0;
+; 0000 0097     }
+; 0000 0098     isRegistering = 0;
 	CLR  R12
 	CLR  R13
-; 0000 008E }
+; 0000 0099 }
 	RET
 ; .FEND
 
@@ -1728,7 +1772,7 @@ _0x29:
 	.BYTE 0x32
 ;
 ;interrupt [USART0_RXC] void usart_rx_isr(void)
-; 0000 0091 {
+; 0000 009C {
 
 	.CSEG
 _usart_rx_isr:
@@ -1746,35 +1790,35 @@ _usart_rx_isr:
 	ST   -Y,R31
 	IN   R30,SREG
 	ST   -Y,R30
-; 0000 0092     char data = UDR0;
-; 0000 0093     if (data == '\n')
+; 0000 009D     char data = UDR0;
+; 0000 009E     if (data == '\n')
 	ST   -Y,R17
 ;	data -> R17
 	IN   R17,12
 	CPI  R17,10
 	BRNE _0x2B
-; 0000 0094     {
-; 0000 0095         inputBuffer[bufferIndex] = '\0'; // Null-terminate the received string
+; 0000 009F     {
+; 0000 00A0         inputBuffer[bufferIndex] = '\0'; // Null-terminate the received string
 	LDI  R26,LOW(_inputBuffer)
 	LDI  R27,HIGH(_inputBuffer)
 	ADD  R26,R10
 	ADC  R27,R11
 	LDI  R30,LOW(0)
 	ST   X,R30
-; 0000 0096         if (loggedUser[0] == '\0')
+; 0000 00A1         if (loggedUser[0] == '\0')
 	LDS  R30,_loggedUser
 	CPI  R30,0
 	BRNE _0x2C
-; 0000 0097         {
-; 0000 0098             if (isRegistering == 0)
+; 0000 00A2         {
+; 0000 00A3             if (isRegistering == 0)
 	MOV  R0,R12
 	OR   R0,R13
 	BRNE _0x2D
-; 0000 0099             {
-; 0000 009A                 check_user();
+; 0000 00A4             {
+; 0000 00A5                 check_user();
 	RCALL _check_user
-; 0000 009B             }
-; 0000 009C             else if (isRegistering == 1)
+; 0000 00A6             }
+; 0000 00A7             else if (isRegistering == 1)
 	RJMP _0x2E
 _0x2D:
 	LDI  R30,LOW(1)
@@ -1782,52 +1826,52 @@ _0x2D:
 	CP   R30,R12
 	CPC  R31,R13
 	BRNE _0x2F
-; 0000 009D             {
-; 0000 009E                 check_new_password();
+; 0000 00A8             {
+; 0000 00A9                 check_new_password();
 	RCALL _check_new_password
-; 0000 009F                 isRegistering++;
+; 0000 00AA                 isRegistering++;
 	MOVW R30,R12
 	ADIW R30,1
 	MOVW R12,R30
-; 0000 00A0             }
-; 0000 00A1             else
+; 0000 00AB             }
+; 0000 00AC             else
 	RJMP _0x30
 _0x2F:
-; 0000 00A2             {
-; 0000 00A3                 check_confirm_password();
+; 0000 00AD             {
+; 0000 00AE                 check_confirm_password();
 	RCALL _check_confirm_password
-; 0000 00A4             }
+; 0000 00AF             }
 _0x30:
 _0x2E:
-; 0000 00A5         }
-; 0000 00A6         else
+; 0000 00B0         }
+; 0000 00B1         else
 	RJMP _0x31
 _0x2C:
-; 0000 00A7         {
-; 0000 00A8             check_password();
+; 0000 00B2         {
+; 0000 00B3             check_password();
 	RCALL _check_password
-; 0000 00A9         }
+; 0000 00B4         }
 _0x31:
-; 0000 00AA         bufferIndex = 0;
+; 0000 00B5         bufferIndex = 0;
 	CLR  R10
 	CLR  R11
-; 0000 00AB     }
-; 0000 00AC     else
+; 0000 00B6     }
+; 0000 00B7     else
 	RJMP _0x32
 _0x2B:
-; 0000 00AD     {
-; 0000 00AE         inputBuffer[bufferIndex] = data;
+; 0000 00B8     {
+; 0000 00B9         inputBuffer[bufferIndex] = data;
 	MOVW R30,R10
 	SUBI R30,LOW(-_inputBuffer)
 	SBCI R31,HIGH(-_inputBuffer)
 	ST   Z,R17
-; 0000 00AF         bufferIndex++;
+; 0000 00BA         bufferIndex++;
 	MOVW R30,R10
 	ADIW R30,1
 	MOVW R10,R30
-; 0000 00B0     }
+; 0000 00BB     }
 _0x32:
-; 0000 00B1 }
+; 0000 00BC }
 	LD   R17,Y+
 	LD   R30,Y+
 	OUT  SREG,R30
@@ -1845,66 +1889,210 @@ _0x32:
 	RETI
 ; .FEND
 ;
+;unsigned char get7SegmentCode(unsigned char digit)
+; 0000 00BF {
+; 0000 00C0     unsigned char segmentCodes[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
+; 0000 00C1     if (digit < 10)
+;	digit -> Y+10
+;	segmentCodes -> Y+0
+; 0000 00C2         return segmentCodes[digit];
+; 0000 00C3     return 0;
+; 0000 00C4 }
+;
+;void display_on_7segment(float voltage)
+; 0000 00C7 {
+; 0000 00C8     static unsigned char digitIndex = 0;
+; 0000 00C9     static unsigned int digitCodes[4] = {0};
+; 0000 00CA 
+; 0000 00CB     // Calculate digit codes once when voltage changes
+; 0000 00CC     static float lastVoltage = -1.0f;
+
+	.DSEG
+
+	.CSEG
+; 0000 00CD     if (voltage != lastVoltage)
+;	voltage -> Y+0
+; 0000 00CE     {
+; 0000 00CF         int intVoltage = (int)(voltage * 100);  // Convert to integer to avoid floating point division
+; 0000 00D0         digitCodes[0] = get7SegmentCode(intVoltage / 1000);  // Thousands
+;	voltage -> Y+2
+;	intVoltage -> Y+0
+; 0000 00D1         digitCodes[1] = get7SegmentCode((intVoltage % 1000) / 100);  // Hundreds
+; 0000 00D2         digitCodes[2] = get7SegmentCode((intVoltage % 100) / 10);  // Tens
+; 0000 00D3         digitCodes[3] = get7SegmentCode(intVoltage % 10);  // Ones
+; 0000 00D4         lastVoltage = voltage;
+; 0000 00D5     }
+; 0000 00D6 
+; 0000 00D7     // Turn off all digits
+; 0000 00D8     PORTA = 0;
+; 0000 00D9 
+; 0000 00DA     // Set segments
+; 0000 00DB     PORTA = digitCodes[digitIndex];
+; 0000 00DC 
+; 0000 00DD     // Turn on the current digit
+; 0000 00DE     PORTA |= (1 << (digitIndex + 4));
+; 0000 00DF 
+; 0000 00E0     // Go to the next digit
+; 0000 00E1     digitIndex = (digitIndex + 1) % 4;
+; 0000 00E2 }
+;
+;void measure_voltage()
+; 0000 00E5 {
+; 0000 00E6     // Start the ADC conversion
+; 0000 00E7     ADCSRA |= (1 << ADSC);
+; 0000 00E8 
+; 0000 00E9     // Wait for conversion to complete
+; 0000 00EA     while (ADCSRA & (1 << ADSC));
+; 0000 00EB 
+; 0000 00EC     // Get the result
+; 0000 00ED     adc_result = ADCL | (ADCH << 8);
+; 0000 00EE 
+; 0000 00EF     // Display the voltage on the 7-segment display and LCD
+; 0000 00F0     voltage = (adc_result / 1024.0) * 5;
+; 0000 00F1     lcd_gotoxy(0, 1);
+; 0000 00F2     sprintf(voltageStr, "Voltage: %.2fV", voltage);
+; 0000 00F3     lcd_puts(voltageStr);
+; 0000 00F4 
+; 0000 00F5 
+; 0000 00F6     // Assuming you have a function to display numbers on 7-segment
+; 0000 00F7     display_on_7segment(voltage);
+; 0000 00F8 }
+;
+;void set_clock()
+; 0000 00FB {
+; 0000 00FC     // Ask the user to input time
+; 0000 00FD     send_string("\nEnter time (HH:MM:SS): ");
+; 0000 00FE     while (c = UDR0, c != '\n') // read until newline
+; 0000 00FF     {
+; 0000 0100         strncat(timeBuffer, &c, 1);
+; 0000 0101     }
+; 0000 0102     // Remove newline character from fgets
+; 0000 0103     timeBuffer[strcspn(timeBuffer, "\n")] = 0;
+; 0000 0104 
+; 0000 0105     sscanf(timeBuffer, "%d:%d:%d", &currentTime.hours, &currentTime.minutes, &currentTime.seconds);
+; 0000 0106 
+; 0000 0107     // Display the time on LCD
+; 0000 0108     sprintf(lcdBuffer, "Time: %02d:%02d:%02d", currentTime.hours, currentTime.minutes, currentTime.seconds);
+; 0000 0109     lcd_gotoxy(0, 1);
+; 0000 010A     lcd_puts(lcdBuffer);
+; 0000 010B }
+
+	.DSEG
+_0x3A:
+	.BYTE 0x1B
+;
+;void auto_shutdown()
+; 0000 010E {
+
+	.CSEG
+; 0000 010F     // Ask the user to input shutdown duration
+; 0000 0110     send_string("\nEnter shutdown duration (MM:SS): ");
+; 0000 0111     while (c = UDR0, c != '\n') // read until newline
+; 0000 0112     {
+; 0000 0113         strncat(durationBuffer, &c, 1);
+; 0000 0114     }
+; 0000 0115     sscanf(durationBuffer, "%d:%d", &shutdownTime.minutes, &shutdownTime.seconds);
+; 0000 0116 
+; 0000 0117     // Start a countdown
+; 0000 0118     while (shutdownTime.minutes != 0 || shutdownTime.seconds != 0)
+; 0000 0119     {
+; 0000 011A         // Decrement the time
+; 0000 011B         if (--shutdownTime.seconds < 0)
+; 0000 011C         {
+; 0000 011D             shutdownTime.seconds = 59;
+; 0000 011E             shutdownTime.minutes--;
+; 0000 011F         }
+; 0000 0120 
+; 0000 0121         // Display the remaining time on LCD
+; 0000 0122         sprintf(lcdBuffer, "Shutdown in %02d:%02d", shutdownTime.minutes, shutdownTime.seconds);
+; 0000 0123         lcd_gotoxy(0, 1);
+; 0000 0124         lcd_puts(lcdBuffer);
+; 0000 0125 
+; 0000 0126         // Beep the buzzer when there is 1 minute left
+; 0000 0127         if (shutdownTime.minutes == 1 && shutdownTime.seconds == 0)
+; 0000 0128         {
+; 0000 0129             PORTD |= (1 << BUZZER);
+; 0000 012A         }
+; 0000 012B 
+; 0000 012C         // Delay for a second
+; 0000 012D         for(i = 0; i < 1000; i++)
+; 0000 012E             delay_ms(1); // Using delay_ms() in a loop
+; 0000 012F }
+; 0000 0130 
+; 0000 0131     // Shutdown the system
+; 0000 0132     PORTD &= ~(1 << LED1);
+; 0000 0133     PORTD &= ~(1 << LED2);
+; 0000 0134     PORTD &= ~(1 << BUZZER);
+; 0000 0135     lcd_clear();
+; 0000 0136     PORTA = 0; // Turn off 7-segment
+; 0000 0137 }
+
+	.DSEG
+_0x3E:
+	.BYTE 0x23
+;
 ;void main(void)
-; 0000 00B4 {
+; 0000 013A {
+
+	.CSEG
 _main:
 ; .FSTART _main
-; 0000 00B5     // Port D is output for LEDs
-; 0000 00B6     DDRD.0 = 1;
+; 0000 013B     // Port D is output for LEDs
+; 0000 013C     DDRD.0 = 1;
 	SBI  0x11,0
-; 0000 00B7     DDRD.1 = 1;
+; 0000 013D     DDRD.1 = 1;
 	SBI  0x11,1
-; 0000 00B8 
-; 0000 00B9     // Turn on the LED1
-; 0000 00BA     LED1 = 1;
+; 0000 013E 
+; 0000 013F     // Turn on the LED1
+; 0000 0140     LED1 = 1;
 	SBI  0x12,0
-; 0000 00BB 
-; 0000 00BC     // Initialize USART
-; 0000 00BD     UCSR0A = 0x00;
+; 0000 0141 
+; 0000 0142     // Initialize USART
+; 0000 0143     UCSR0A = 0x00;
 	LDI  R30,LOW(0)
 	OUT  0xB,R30
-; 0000 00BE     UCSR0B = 0x18;
+; 0000 0144     UCSR0B = 0x18;
 	LDI  R30,LOW(24)
 	OUT  0xA,R30
-; 0000 00BF     UCSR0C = 0x06;
+; 0000 0145     UCSR0C = 0x06;
 	LDI  R30,LOW(6)
 	STS  149,R30
-; 0000 00C0     UBRR0L = 51; // for 9600 bps with 8MHz clock
+; 0000 0146     UBRR0L = 51; // for 9600 bps with 8MHz clock
 	LDI  R30,LOW(51)
 	OUT  0x9,R30
-; 0000 00C1 
-; 0000 00C2     // Enable Global Interrupts
-; 0000 00C3     #asm("sei")
+; 0000 0147 
+; 0000 0148     // Enable Global Interrupts
+; 0000 0149     #asm("sei")
 	sei
-; 0000 00C4 
-; 0000 00C5     send_string("Enter Username: ");
-	__POINTW2MN _0x39,0
+; 0000 014A 
+; 0000 014B     send_string("Enter Username: ");
+	__POINTW2MN _0x54,0
 	RCALL _send_string
-; 0000 00C6 
-; 0000 00C7     while (1)
-_0x3A:
-; 0000 00C8 {
-; 0000 00C9     if (isMenuOpen == 1)
+; 0000 014C 
+; 0000 014D     while (1)
+_0x55:
+; 0000 014E {
+; 0000 014F     if (isMenuOpen == 1)
 	LDS  R26,_isMenuOpen
 	LDS  R27,_isMenuOpen+1
 	SBIW R26,1
-	BRNE _0x3D
-; 0000 00CA     {
-; 0000 00CB         // Display the menu on LCD
-; 0000 00CC         lcd_gotoxy(0, 0);
+	BRNE _0x58
+; 0000 0150     {
+; 0000 0151         // Display the menu on LCD
+; 0000 0152         lcd_gotoxy(0, 0);
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	LDI  R26,LOW(0)
 	CALL _lcd_gotoxy
-; 0000 00CD         lcd_putsf("Menu: ");
-	__POINTW2FN _0x0,214
+; 0000 0153         lcd_putsf("Menu: ");
+	__POINTW2FN _0x0,341
 	CALL _lcd_putsf
-; 0000 00CE         lcd_gotoxy(0, 1);
+; 0000 0154         lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	LDI  R26,LOW(1)
 	CALL _lcd_gotoxy
-; 0000 00CF         lcd_puts(menuOptions[menuSelection]);
+; 0000 0155         lcd_puts(menuOptions[menuSelection]);
 	LDS  R30,_menuSelection
 	LDS  R31,_menuSelection+1
 	LDI  R26,LOW(_menuOptions)
@@ -1916,16 +2104,16 @@ _0x3A:
 	CALL __GETW1P
 	MOVW R26,R30
 	CALL _lcd_puts
-; 0000 00D0 
-; 0000 00D1         // Display selection on 7-segment
-; 0000 00D2         PORTA = menuSelection + 1;
+; 0000 0156 
+; 0000 0157         // Display selection on 7-segment
+; 0000 0158         PORTA = menuSelection + 1;
 	LDS  R30,_menuSelection
 	SUBI R30,-LOW(1)
 	OUT  0x1B,R30
-; 0000 00D3     }
-; 0000 00D4 
-; 0000 00D5     if (PIND & (1 << KEY_PORT))
-_0x3D:
+; 0000 0159     }
+; 0000 015A 
+; 0000 015B     if (PIND & (1 << KEY_PORT))
+_0x58:
 	IN   R1,16
 	LDI  R30,0
 	SBIC 0x12,2
@@ -1938,47 +2126,47 @@ _0x3D:
 	AND  R30,R26
 	AND  R31,R27
 	SBIW R30,0
-	BREQ _0x3E
-; 0000 00D6     {
-; 0000 00D7         // Menu button is pressed
-; 0000 00D8         if (isMenuOpen == 0)
+	BREQ _0x59
+; 0000 015C     {
+; 0000 015D         // Menu button is pressed
+; 0000 015E         if (isMenuOpen == 0)
 	LDS  R30,_isMenuOpen
 	LDS  R31,_isMenuOpen+1
 	SBIW R30,0
-	BRNE _0x3F
-; 0000 00D9         {
-; 0000 00DA             // Open the menu
-; 0000 00DB             isMenuOpen = 1;
+	BRNE _0x5A
+; 0000 015F         {
+; 0000 0160             // Open the menu
+; 0000 0161             isMenuOpen = 1;
 	LDI  R30,LOW(1)
 	LDI  R31,HIGH(1)
 	STS  _isMenuOpen,R30
 	STS  _isMenuOpen+1,R31
-; 0000 00DC         }
-; 0000 00DD         else
-	RJMP _0x40
-_0x3F:
-; 0000 00DE         {
-; 0000 00DF             // Close the menu
-; 0000 00E0             isMenuOpen = 0;
+; 0000 0162         }
+; 0000 0163         else
+	RJMP _0x5B
+_0x5A:
+; 0000 0164         {
+; 0000 0165             // Close the menu
+; 0000 0166             isMenuOpen = 0;
 	LDI  R30,LOW(0)
 	STS  _isMenuOpen,R30
 	STS  _isMenuOpen+1,R30
-; 0000 00E1             PORTA = 0; // Turn off 7-segment
+; 0000 0167             PORTA = 0; // Turn off 7-segment
 	OUT  0x1B,R30
-; 0000 00E2         }
-_0x40:
-; 0000 00E3     }
-; 0000 00E4 }
-_0x3E:
-	RJMP _0x3A
-; 0000 00E5 
-; 0000 00E6 }
-_0x41:
-	RJMP _0x41
+; 0000 0168         }
+_0x5B:
+; 0000 0169     }
+; 0000 016A }
+_0x59:
+	RJMP _0x55
+; 0000 016B 
+; 0000 016C }
+_0x5C:
+	RJMP _0x5C
 ; .FEND
 
 	.DSEG
-_0x39:
+_0x54:
 	.BYTE 0x11
 	#ifndef __SLEEP_DEFINED__
 	#define __SLEEP_DEFINED__
@@ -2202,11 +2390,29 @@ _tempPassword:
 	.BYTE 0x14
 _loggedUser:
 	.BYTE 0x14
+_currentTime:
+	.BYTE 0x6
+_shutdownTime:
+	.BYTE 0x6
 _menuOptions:
 	.BYTE 0x6
 _isMenuOpen:
 	.BYTE 0x2
 _menuSelection:
+	.BYTE 0x2
+_voltage:
+	.BYTE 0x4
+_voltageStr:
+	.BYTE 0x14
+_timeBuffer:
+	.BYTE 0xA
+_c:
+	.BYTE 0x1
+_lcdBuffer:
+	.BYTE 0x14
+_durationBuffer:
+	.BYTE 0xA
+_i:
 	.BYTE 0x2
 __seed_G101:
 	.BYTE 0x4
