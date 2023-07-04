@@ -105,7 +105,7 @@ void check_password()
     {
         if (strcmp(predefinedUsers[i].username, inputBuffer) == 0)
         {
-            if (strcmp(predefinedUsers[i].password, inputBuffer) == 0)
+            if (strcmp(predefinedUsers[i].password, tempPassword) == 0)
             {
                 strcpy(loggedUser, predefinedUsers[i].username);
                 LED2 = 1; // Turn on the LED2
@@ -118,7 +118,7 @@ void check_password()
     {
         if (strcmp(registeredUsers[i].username, inputBuffer) == 0)
         {
-            if (strcmp(registeredUsers[i].password, inputBuffer) == 0)
+            if (strcmp(registeredUsers[i].password, tempPassword) == 0)
             {
                 strcpy(loggedUser, registeredUsers[i].username);
                 LED2 = 1; // Turn on the LED2
@@ -331,34 +331,51 @@ void main(void)
     send_string("Enter Username: ");
 
     while (1)
-{
-    if (isMenuOpen == 1)
     {
-        // Display the menu on LCD
-        lcd_gotoxy(0, 0);
-        lcd_putsf("Menu: ");
-        lcd_gotoxy(0, 1);
-        lcd_puts(menuOptions[menuSelection]);
-
-        // Display selection on 7-segment
-        PORTA = menuSelection + 1;
-    }
-
-    if (PIND & (1 << KEY_PORT))
-    {
-        // Menu button is pressed
-        if (isMenuOpen == 0)
+        if (isMenuOpen == 1)
         {
-            // Open the menu
-            isMenuOpen = 1;
+            // Display the menu on LCD
+            lcd_gotoxy(0, 0);
+            lcd_putsf("Menu: ");
+            lcd_gotoxy(0, 1);
+            lcd_puts(menuOptions[menuSelection]);
+
+            // Display selection on 7-segment
+            PORTA = menuSelection + 1;
+
+            // Implement switch case for menu selections
+            switch (menuSelection)
+            {
+                case 0:
+                    measure_voltage();
+                    break;
+                case 1:
+                    set_clock();
+                    break;
+                case 2:
+                    auto_shutdown();
+                    break;
+            }
         }
-        else
+
+        if (PIND & (1 << KEY_PORT))
         {
-            // Close the menu
-            isMenuOpen = 0;
-            PORTA = 0; // Turn off 7-segment
+            // Menu button is pressed
+            if (isMenuOpen == 0)
+            {
+                // Open the menu
+                isMenuOpen = 1;
+                menuSelection = 0; // Reset the menu selection
+            }
+            else
+            {
+                // Select the current menu item
+                menuSelection = (menuSelection + 1) % numMenuOptions;
+
+                // Close the menu
+                isMenuOpen = 0;
+                PORTA = 0; // Turn off 7-segment
+            }
         }
     }
-}
-
 }
